@@ -98,3 +98,102 @@ body {
 .question-preview .progress-bar {
     background-color: #42c7bc;
 }
+
+/* Activities Section */
+.activities-section {
+    padding: 80px 0;
+}
+
+.section-heading {
+    align-items: end;
+    display: flex;
+    gap: 32px;
+    justify-content: space-between;
+    margin-bottom: 32px;
+}
+
+.section-heading h2 {
+    font-size: clamp(2rem, 4vw, 3.5rem);
+    font-weight: 800;
+}
+
+.section-heading > p {
+    color: #4b5563;
+    line-height: 1.6;
+    max-width: 420px;
+}
+
+.activity-card {
+    border: 2px solid #1f2937;
+    border-radius: 20px;
+    box-shadow: 6px 6px 0 #1f2937;
+    height: 100%;
+    padding: 24px;
+}
+
+.activity-icon {
+    background-color: white;
+    border: 2px solid #1f2937;
+    border-radius: 12px;
+    display: inline-block;
+    font-size: 1.4rem;
+    padding: 8px 12px;
+}
+
+.activity-type {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    margin: 20px 0 8px;
+}
+
+.activity-card h3 {
+    font-size: 1.4rem;
+    font-weight: 800;
+}
+
+.activity-card > p:not(.activity-type) {
+    color: #4b5563;
+    line-height: 1.6;
+}
+
+.activity-card button {
+  background: transparent;
+  border: 0;
+  color: #1f2937;
+  font-weight: 700;
+  padding: 0;
+}
+
+.activity-card button:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
+.cycle-card {
+  background-color: #ccefee;
+}
+
+.blitz-card {
+  background-color: #ffe28a;
+}
+
+.journal-card {
+  background-color: #f4d7ed;
+}
+
+.statements-card {
+  background-color: #dfd6ff;
+}
+
+.hotdog-card {
+  background-color: #ffcaa7;
+}
+
+@media (max-width: 767px) {
+  .section-heading {
+    align-items: start;
+    flex-direction: column;
+    gap: 8px;
+  }
+}
