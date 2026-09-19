@@ -313,6 +313,47 @@ body {
   }
 }
 
+.quiz-progress {
+  height: 8px;
+  margin-top: 16px;
+}
+
+.quiz-progress .progress-bar {
+  background-color: #5b3cc4;
+}
+
+.result-screen {
+  background-color: #eee8ff;
+  border: 2px solid #1f2937;
+  border-radius: 20px;
+  box-shadow: 6px 6px 0 #1f2937;
+  margin-top: 32px;
+  padding: 40px;
+  text-align: center;
+}
+
+.result-screen h2 {
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-weight: 800;
+}
+
+.result-score {
+  font-size: 2rem;
+  font-weight: 800;
+  margin-bottom: 0;
+}
+
+.result-percentage {
+  color: #5b3cc4;
+  font-size: 4rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.result-screen .btn {
+  margin: 8px 4px 0;
+}
+
 /* Responsive Design */
 
 @media (max-width: 767px) {

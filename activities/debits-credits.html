@@ -45,10 +45,21 @@
             credit side. Every round will use different accounts and values.
           </p>
 
-          <div class="game-panel">
+          <div class="game-panel" id="game-screen">
             <div class="game-status">
-              <span>QUICK QUESTION</span>
-              <span id="question-number">01</span>
+              <span>QUESTION</span>
+              <span id="question-number">1 / 10</span>
+            </div>
+
+            <div
+              class="progress quiz-progress"
+              role="progressbar"
+              aria-label="Quiz progress"
+              aria-valuemin="0"
+              aria-valuemax="10"
+              aria-valuenow="0"
+            >
+              <div class="progress-bar" id="quiz-progress-bar"></div>
             </div>
 
             <p class="question-prompt">
@@ -80,13 +91,40 @@
 
               <button
                 class="btn btn-primary"
-                id="new-question-button"
+                id="next-question-button"
                 type="button"
               >
-                New question
+                Next question
               </button>
             </div>
           </div>
+
+          <section class="result-screen" id="result-screen" hidden>
+            <p class="hero-eyebrow">ROUND COMPLETE</p>
+
+            <h2 id="result-title">Great work!</h2>
+
+            <p class="result-score" id="score-display">0 / 10</p>
+
+            <p class="result-percentage" id="score-percentage">0%</p>
+
+            <p id="result-message"></p>
+
+            <button
+              class="btn btn-primary btn-lg rounded-pill px-4"
+              id="play-again-button"
+              type="button"
+            >
+              Play again
+            </button>
+
+            <a
+              class="btn btn-outline-primary btn-lg rounded-pill px-4"
+              href="../index.html#activities"
+            >
+              Choose another activity
+            </a>
+          </section>
         </section>
       </div>
     </main>
