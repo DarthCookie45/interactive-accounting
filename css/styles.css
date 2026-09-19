@@ -190,6 +190,61 @@ body {
   background-color: #ffcaa7;
 }
 
+
+/* Activity link Section */
+.activity-link {
+    color: #1f2937;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.activity-link:hover {
+    color: #5b3cc4;
+    text-decoration: underline;
+}
+
+.activity-page-main {
+    min-height: calc(100vh - 72px);
+    padding: 72px 0;
+}
+
+.back-link {
+    color: #5b3cc4;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.back-link:hover {
+    text-decoration: underline;
+}
+
+.game-intro {
+    margin: 48px auto 0;
+    max-width: 760px;
+}
+
+.game-intro h1 {
+    font-size: clamp(2.5rem, 6vw, 4.5rem);
+    font-weight: 800;
+}
+
+.game-intro > p {
+    color: #4b5563;
+    line-height: 1.6;
+    font-size: 1.15rem;
+}
+
+.game-panel {
+    background-color: #ffe28a;
+    border: 2px solid #1f2937;
+    border-radius: 20px;
+    box-shadow: 6px 6px 0 #1f2937;
+    margin-top: 32px;
+    padding: 32px;
+}
+
+/* Responsive Design */
+
 @media (max-width: 767px) {
   .section-heading {
     align-items: start;
