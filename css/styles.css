@@ -243,6 +243,76 @@ body {
     padding: 32px;
 }
 
+.game-status {
+  display: flex;
+  font-size: 0.75rem;
+  font-weight: 700;
+  justify-content: space-between;
+  letter-spacing: 1px;
+}
+
+.question-prompt {
+  margin: 32px 0 8px;
+}
+
+.question-amount {
+  color: #4b5563;
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.answer-buttons {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(2, 1fr);
+  margin-top: 28px;
+}
+
+.answer-button {
+  background-color: white;
+  border: 2px solid #1f2937;
+  border-radius: 12px;
+  color: #1f2937;
+  font-size: 1.1rem;
+  font-weight: 700;
+  padding: 16px;
+}
+
+.answer-button:hover:not(:disabled) {
+  background-color: #eee8ff;
+}
+
+.answer-button:disabled {
+  cursor: not-allowed;
+}
+
+.correct-answer {
+  background-color: #b7f0d2;
+  border-color: #16834d;
+}
+
+.incorrect-answer {
+  background-color: #ffd1d1;
+  border-color: #bd2929;
+}
+
+.feedback-message {
+  background-color: rgba(255, 255, 255, 0.6);
+  border-radius: 12px;
+  margin-top: 24px;
+  padding: 20px;
+}
+
+.feedback-message p {
+  font-weight: 600;
+}
+
+@media (max-width: 500px) {
+  .answer-buttons {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* Responsive Design */
 
 @media (max-width: 767px) {

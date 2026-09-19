@@ -46,9 +46,46 @@
           </p>
 
           <div class="game-panel">
-            <h2>Get ready!</h2>
+            <div class="game-status">
+              <span>QUICK QUESTION</span>
+              <span id="question-number">01</span>
+            </div>
 
-            <p>Placeholder text.</p>
+            <p class="question-prompt">
+              If the following account increases, which side receives the
+              amount?
+            </p>
+
+            <h2 id="account-name">Loading question...</h2>
+
+            <p class="question-amount" id="question-amount"></p>
+
+            <div class="answer-buttons">
+              <button class="answer-button" type="button" data-answer="debit">
+                Debit
+              </button>
+
+              <button class="answer-button" type="button" data-answer="credit">
+                Credit
+              </button>
+            </div>
+
+            <div
+              class="feedback-message"
+              id="feedback-message"
+              hidden
+              aria-live="polite"
+            >
+              <p id="feedback-text"></p>
+
+              <button
+                class="btn btn-primary"
+                id="new-question-button"
+                type="button"
+              >
+                New question
+              </button>
+            </div>
           </div>
         </section>
       </div>
