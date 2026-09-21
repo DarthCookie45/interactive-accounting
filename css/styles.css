@@ -354,6 +354,17 @@ body {
   margin: 8px 4px 0;
 }
 
+/* Accounting Cycle */
+.cycle-panel {
+  background-color: #ccefee;
+}
+
+.cycle-note {
+  color: #5b3cc4;
+  font-weight: 700;
+  margin-bottom: 0;
+}
+
 /* Responsive Design */
 
 @media (max-width: 767px) {
