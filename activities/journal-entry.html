@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en-GB">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Journal Entry Constructor | Interactive Accounting</title>
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../css/styles.css" />
+  </head>
+
+  <body>
+    <header>
+      <nav class="navbar navbar-light bg-light">
+        <div class="container">
+          <a class="navbar-brand fw-bold" href="../index.html">
+            Interactive Accounting
+          </a>
+
+          <a class="btn btn-outline-primary" href="../index.html#activities">
+            Back to activities
+          </a>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container py-4">
+      <header class="mb-4">
+        <p class="hero-eyebrow">PUT DOUBLE ENTRY INTO PRACTICE</p>
+        <h1>Journal Entry Constructor</h1>
+        <p>
+          Read the transaction, choose the accounts and build a balanced journal
+          entry.
+        </p>
+      </header>
+
+      <section
+        class="journal-transaction mb-4"
+        aria-labelledby="transaction-title"
+      >
+        <h2 id="transaction-title">Your transaction</h2>
+        <p class="mb-0">
+          A Bristol café buys equipment for £600 and pays immediately from its
+          business bank account.
+        </p>
+      </section>
+
+      <section class="journal-builder" aria-labelledby="entry-title">
+        <h2 id="entry-title">Build your entry</h2>
+        <p>We’ll add the account choices and amount fields in the next step.</p>
+      </section>
+    </main>
+
+    <script src="../js/journal-entry.js"></script>
+  </body>
+</html>
