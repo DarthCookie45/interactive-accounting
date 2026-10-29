@@ -51,7 +51,128 @@
 
       <section class="journal-builder" aria-labelledby="entry-title">
         <h2 id="entry-title">Build your entry</h2>
-        <p>We’ll add the account choices and amount fields in the next step.</p>
+        <p id="entry-help">
+          Choose two accounts, then enter a debit on one row and a credit on the
+          other. For this transaction, ignore VAT.
+        </p>
+
+        <form id="journal-form" aria-describedby="entry-help">
+          <div class="table-responsive">
+            <table class="table align-middle">
+              <caption>
+                Journal entry amounts in pounds sterling.
+              </caption>
+
+              <thead>
+                <tr>
+                  <th scope="col">Account</th>
+                  <th scope="col">Debit (£)</th>
+                  <th scope="col">Credit (£)</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                <tr>
+                  <td>
+                    <label class="visually-hidden" for="account-1">
+                      Account for row one
+                    </label>
+                    <select class="form-select" id="account-1" required>
+                      <option value="">Choose an account</option>
+                      <option value="bank">Bank</option>
+                      <option value="equipment">Equipment</option>
+                      <option value="sales">Sales</option>
+                      <option value="rent">Rent expense</option>
+                    </select>
+                  </td>
+
+                  <td>
+                    <label class="visually-hidden" for="debit-1">
+                      Row one debit in pounds
+                    </label>
+                    <input
+                      class="form-control"
+                      id="debit-1"
+                      type="number"
+                      min="0"
+                      step="0.01"
+                      inputmode="decimal"
+                      placeholder="0.00"
+                    />
+                  </td>
+
+                  <td>
+                    <label class="visually-hidden" for="credit-1">
+                      Row one credit in pounds
+                    </label>
+                    <input
+                      class="form-control"
+                      id="credit-1"
+                      type="number"
+                      min="0"
+                      step="0.01"
+                      inputmode="decimal"
+                      placeholder="0.00"
+                    />
+                  </td>
+                </tr>
+
+                <tr>
+                  <td>
+                    <label class="visually-hidden" for="account-2">
+                      Account for row two
+                    </label>
+                    <select class="form-select" id="account-2" required>
+                      <option value="">Choose an account</option>
+                      <option value="bank">Bank</option>
+                      <option value="equipment">Equipment</option>
+                      <option value="sales">Sales</option>
+                      <option value="rent">Rent expense</option>
+                    </select>
+                  </td>
+
+                  <td>
+                    <label class="visually-hidden" for="debit-2">
+                      Row two debit in pounds
+                    </label>
+                    <input
+                      class="form-control"
+                      id="debit-2"
+                      type="number"
+                      min="0"
+                      step="0.01"
+                      inputmode="decimal"
+                      placeholder="0.00"
+                    />
+                  </td>
+
+                  <td>
+                    <label class="visually-hidden" for="credit-2">
+                      Row two credit in pounds
+                    </label>
+                    <input
+                      class="form-control"
+                      id="credit-2"
+                      type="number"
+                      min="0"
+                      step="0.01"
+                      inputmode="decimal"
+                      placeholder="0.00"
+                    />
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <button class="btn btn-primary" type="submit" disabled>
+            Check entry
+          </button>
+
+          <p class="small text-muted mt-2 mb-0">
+            Entry checking will be available in the next step.
+          </p>
+        </form>
       </section>
     </main>
 
