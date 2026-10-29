@@ -43,10 +43,7 @@
         aria-labelledby="transaction-title"
       >
         <h2 id="transaction-title">Your transaction</h2>
-        <p class="mb-0">
-          A Bristol café buys equipment for £600 and pays immediately from its
-          business bank account.
-        </p>
+        <p id="journal-transaction" class="mb-0"></p>
       </section>
 
       <section class="journal-builder" aria-labelledby="entry-title">
@@ -166,6 +163,13 @@
           </div>
 
           <button class="btn btn-primary" type="submit">Check entry</button>
+          <button
+            class="btn btn-outline-primary ms-2"
+            id="new-transaction"
+            type="button"
+          >
+            New transaction
+          </button>
 
           <div
             id="journal-feedback"

@@ -3,6 +3,45 @@
 const journalForm = document.querySelector("#journal-form");
 const journalFeedback = document.querySelector("#journal-feedback");
 
+const transactionText = document.querySelector("#journal-transaction");
+const newTransactionButton = document.querySelector("#new-transaction");
+
+const businesses = [
+  "A Bristol café",
+  "A Cardiff bakery",
+  "A Manchester florist",
+  "An Edinburgh bookshop",
+  "A Belfast bicycle shop",
+  "A Leeds hair salon"
+];
+
+const pounds = new Intl.NumberFormat("en-GB", {
+  style: "currency",
+  currency: "GBP",
+  maximumFractionDigits: 0
+});
+
+let transactionAmount = 0;
+
+function generateTransaction() {
+  const businessIndex = Math.floor(Math.random() * businesses.length);
+
+  // Generate a different amount from the previous question.
+  const previousAmount = transactionAmount;
+
+  do {
+    transactionAmount = (Math.floor(Math.random() * 36) + 5) * 50;
+  } while (transactionAmount === previousAmount);
+
+  transactionText.textContent =
+    `${businesses[businessIndex]} buys equipment for ` +
+    `${pounds.format(transactionAmount)} and pays immediately ` +
+    "from its business bank account.";
+
+  journalForm.reset();
+  journalFeedback.hidden = true;
+}
+
 function showFeedback(message, isCorrect) {
   journalFeedback.textContent = message;
   journalFeedback.className = isCorrect
@@ -101,16 +140,22 @@ journalForm.addEventListener("submit", (event) => {
     return;
   }
 
-  if (equipmentRow.debit !== 600 || bankRow.credit !== 600) {
+  if (
+    equipmentRow.debit !== transactionAmount ||
+    bankRow.credit !== transactionAmount
+  ) {
     showFeedback(
-      "The accounts and sides are correct. Check the transaction amount: the equipment cost £600.",
+      "The accounts and sides are correct. Check the transaction amount: " +
+      `the equipment cost ${pounds.format(transactionAmount)}.`,
       false
     );
     return;
   }
 
   showFeedback(
-    "Correct! Debit Equipment £600 and credit Bank £600. Equipment increases, while money in the bank decreases.",
+    `Correct! Debit Equipment ${pounds.format(transactionAmount)} ` +
+    `and credit Bank ${pounds.format(transactionAmount)}. ` +
+    "Equipment increases, while money in the bank decreases.",
     true
   );
 });
@@ -123,3 +168,7 @@ journalForm.addEventListener("input", () => {
 journalForm.addEventListener("change", () => {
   journalFeedback.hidden = true;
 });
+
+newTransactionButton.addEventListener("click", generateTransaction);
+
+generateTransaction();
