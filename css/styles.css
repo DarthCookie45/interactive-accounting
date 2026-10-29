@@ -1392,3 +1392,24 @@ body {
   font-size: 1.4rem;
   font-weight: 800;
 }
+
+.journal-totals {
+  background-color: #f4edff;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  padding: 16px;
+}
+
+.journal-totals p {
+  margin-bottom: 6px;
+}
+
+.journal-totals .is-balanced {
+  color: #146c43;
+  font-weight: 700;
+}
+
+.journal-totals .is-unbalanced {
+  color: #a12622;
+  font-weight: 700;
+}

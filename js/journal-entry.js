@@ -172,3 +172,57 @@ journalForm.addEventListener("change", () => {
 newTransactionButton.addEventListener("click", generateTransaction);
 
 generateTransaction();
+
+const totalDebitsDisplay = document.querySelector("#total-debits");
+const totalCreditsDisplay = document.querySelector("#total-credits");
+const balanceStatus = document.querySelector("#balance-status");
+
+const moneyWithPennies = new Intl.NumberFormat("en-GB", {
+  style: "currency",
+  currency: "GBP"
+});
+
+function updateTotals() {
+  const rows = [readRow(1), readRow(2)];
+
+  const debitPennies = rows.reduce((total, row) => {
+    return total + (Number.isFinite(row.debit)
+      ? Math.round(row.debit * 100)
+      : 0);
+  }, 0);
+
+  const creditPennies = rows.reduce((total, row) => {
+    return total + (Number.isFinite(row.credit)
+      ? Math.round(row.credit * 100)
+      : 0);
+  }, 0);
+
+  totalDebitsDisplay.textContent =
+    moneyWithPennies.format(debitPennies / 100);
+
+  totalCreditsDisplay.textContent =
+    moneyWithPennies.format(creditPennies / 100);
+
+  balanceStatus.classList.remove("is-balanced", "is-unbalanced");
+
+  if (debitPennies === 0 && creditPennies === 0) {
+    balanceStatus.textContent = "Enter your amounts to begin.";
+  } else if (debitPennies === creditPennies) {
+    balanceStatus.textContent =
+      "Your entry balances. Use Check entry to check the accounting.";
+    balanceStatus.classList.add("is-balanced");
+  } else {
+    const difference = Math.abs(debitPennies - creditPennies) / 100;
+
+    balanceStatus.textContent =
+      `Not balanced yet. Difference: ${moneyWithPennies.format(difference)}.`;
+    balanceStatus.classList.add("is-unbalanced");
+  }
+}
+
+journalForm.addEventListener("input", updateTotals);
+
+// Reset totals after the new transaction clears the form.
+newTransactionButton.addEventListener("click", updateTotals);
+
+updateTotals();
