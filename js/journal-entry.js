@@ -5,6 +5,7 @@ const journalFeedback = document.querySelector("#journal-feedback");
 
 const transactionText = document.querySelector("#journal-transaction");
 const newTransactionButton = document.querySelector("#new-transaction");
+const checkEntryButton = journalForm.querySelector('button[type="submit"]');
 
 const businesses = [
   "A Bristol café",
@@ -81,9 +82,19 @@ function generateTransaction() {
       `${businesses[businessIndex]} ${currentTransaction.description} for ` +
       `${pounds.format(transactionAmount)} ${currentTransaction.paymentText}.`;
 
-        journalForm.reset();
-        journalFeedback.hidden = true;
-    }
+  journalForm.reset();
+  journalFeedback.hidden = true;
+  setEntryLocked(false);
+  newTransactionButton.textContent = "New transaction";
+}
+
+function setEntryLocked(isLocked) {
+  journalForm.querySelectorAll("select, input").forEach((field) => {
+    field.disabled = isLocked;
+  });
+
+  checkEntryButton.disabled = isLocked;
+}
 
 function showFeedback(message, isCorrect) {
   journalFeedback.textContent = message;
@@ -107,6 +118,10 @@ function readRow(rowNumber) {
 
 journalForm.addEventListener("submit", (event) => {
   event.preventDefault();
+
+  if (checkEntryButton.disabled) {
+    return;
+  }
 
   const rows = [readRow(1), readRow(2)];
 
@@ -204,6 +219,9 @@ journalForm.addEventListener("submit", (event) => {
     currentTransaction.explanation,
     true
   );
+  setEntryLocked(true);
+  newTransactionButton.textContent = "Next transaction";
+  newTransactionButton.focus();
 });
 
 // Clear old feedback when the student changes their entry.
