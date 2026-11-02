@@ -1413,3 +1413,54 @@ body {
   color: #a12622;
   font-weight: 700;
 }
+
+/* Keep journal feedback within reach on desktop screens. */
+.journal-page .journal-transaction,
+.journal-page .journal-builder {
+  padding: 18px 24px;
+}
+
+.journal-page > header > p:last-child,
+.journal-page #entry-help {
+  margin-bottom: 12px;
+}
+
+.journal-page .hero-eyebrow {
+  margin-bottom: 8px;
+}
+
+.journal-page .table {
+  margin-bottom: 8px;
+}
+
+.journal-page .table caption {
+  padding-block: 4px;
+}
+
+.journal-page .journal-totals {
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: 28px;
+  row-gap: 4px;
+  margin-bottom: 12px;
+  padding: 12px 16px;
+}
+
+.journal-page .journal-totals p {
+  margin-bottom: 0;
+}
+
+.journal-page #balance-status {
+  flex-basis: 100%;
+}
+
+.journal-page #journal-feedback {
+  padding: 12px 16px;
+}
+
+@media (max-width: 575px) {
+  .journal-page .journal-transaction,
+  .journal-page .journal-builder {
+    padding: 16px;
+  }
+}
