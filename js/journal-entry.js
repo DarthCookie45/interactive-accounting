@@ -68,17 +68,29 @@ const transactionTypes = [
       "Money in the bank increases, so Bank is debited. Sales income increases, so Sales is credited."
   },
   {
-  description: "receives a capital contribution from its owner",
-  paymentText: "directly into its business bank account",
-  debitAccount: "bank",
-  debitName: "Bank",
-  creditAccount: "capital",
-  creditName: "Owner’s capital",
-  explanation:
-    "Money in the bank increases, so Bank is debited. The owner’s investment increases capital, so Owner’s capital is credited. This is not sales income.",
-  hint:
-    "The business receives money, but it has not earned it from a customer. Think about the owner’s investment and the increase in the bank balance."
-}
+    description: "receives a capital contribution from its owner",
+    paymentText: "directly into its business bank account",
+    debitAccount: "bank",
+    debitName: "Bank",
+    creditAccount: "capital",
+    creditName: "Owner’s capital",
+    explanation:
+      "Money in the bank increases, so Bank is debited. The owner’s investment increases capital, so Owner’s capital is credited. This is not sales income.",
+    hint:
+      "The business receives money, but it has not earned it from a customer. Think about the owner’s investment and the increase in the bank balance."
+  },
+  {
+    description: "records a personal withdrawal by its owner",
+    paymentText: "paid directly from its business bank account",
+    debitAccount: "drawings",
+    debitName: "Drawings",
+    creditAccount: "bank",
+    creditName: "Bank",
+    explanation:
+      "The owner’s personal withdrawal increases Drawings, so Drawings is debited. Money in the business bank account decreases, so Bank is credited. Drawings are not a business expense.",
+    hint:
+      "The money is being used personally by the owner, rather than to run the business. Think about the account for personal withdrawals and the money leaving Bank."
+  }
 ];
   
 let currentTransaction = transactionTypes[0];
