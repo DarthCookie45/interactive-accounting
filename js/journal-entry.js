@@ -12,7 +12,13 @@ const businesses = [
   "A Manchester florist",
   "An Edinburgh bookshop",
   "A Belfast bicycle shop",
-  "A Leeds hair salon"
+  "A Leeds hair salon",
+  "A Halesowen car repair garage",
+  "A Dudley plumbing business",
+  "A Birmingham IT consultancy",
+  "A London marketing agency",
+  "A Glasgow clothing store",
+  "A Liverpool music shop",
 ];
 
 const pounds = new Intl.NumberFormat("en-GB", {
@@ -28,6 +34,8 @@ const transactionTypes = [
     description: "buys equipment",
     debitAccount: "equipment",
     debitName: "Equipment",
+    creditAccount: "bank",
+    creditName: "Bank",
     explanation:
       "Equipment increases, so it is debited. Money in the bank decreases, so Bank is credited."
   },
@@ -35,6 +43,8 @@ const transactionTypes = [
     description: "pays this month’s rent",
     debitAccount: "rent",
     debitName: "Rent expense",
+    creditAccount: "bank",
+    creditName: "Bank",
     explanation:
       "Rent expense increases, so it is debited. Money in the bank decreases, so Bank is credited."
   }
@@ -144,17 +154,19 @@ journalForm.addEventListener("submit", (event) => {
   }
 
   const debitRow = rows.find((row) => row.account === currentTransaction.debitAccount);
-  const bankRow = rows.find((row) => row.account === "bank");
+  const creditRow = rows.find((row) => {
+    return row.account === currentTransaction.creditAccount;
+  });
 
-  if (!debitRow || !bankRow) {
+  if (!debitRow || !creditRow) {
     showFeedback(
-      `Your entry balances, but check the accounts. This transaction affects ${currentTransaction.debitName} and Bank.`,
+      `Your entry balances, but check the accounts. This transaction affects ${currentTransaction.debitName} and ${currentTransaction.creditName}.`,
       false
     );
     return;
   }
 
-  if (debitRow.debit === 0 || bankRow.credit === 0) {
+  if (debitRow.debit === 0 || creditRow.credit === 0) {
     showFeedback(
       "The accounts are correct, but the sides are reversed. " + currentTransaction.explanation,
       false
@@ -164,7 +176,7 @@ journalForm.addEventListener("submit", (event) => {
 
   if (
     debitRow.debit !== transactionAmount ||
-    bankRow.credit !== transactionAmount
+    creditRow.credit !== transactionAmount
   ) {
     showFeedback(
       "The accounts and sides are correct. Check the transaction amount: " +
@@ -175,8 +187,9 @@ journalForm.addEventListener("submit", (event) => {
   }
 
   showFeedback(
-    `Correct! Debit ${currentTransaction.debitName} ${pounds.format(transactionAmount)} ` +
-    `and credit Bank ${pounds.format(transactionAmount)}. ` +
+    `Correct! Debit ${currentTransaction.debitName} ` +
+    `${pounds.format(transactionAmount)} and credit ` +
+    `${currentTransaction.creditName} ${pounds.format(transactionAmount)}. ` +
     currentTransaction.explanation,
     true
   );
