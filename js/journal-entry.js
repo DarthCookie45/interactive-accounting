@@ -32,6 +32,7 @@ let transactionAmount = 0;
 const transactionTypes = [
   {
     description: "buys equipment",
+    paymentText: "and pays immediately from its business bank account",
     debitAccount: "equipment",
     debitName: "Equipment",
     creditAccount: "bank",
@@ -41,15 +42,26 @@ const transactionTypes = [
   },
   {
     description: "pays this month’s rent",
+    paymentText: "and pays immediately from its business bank account",
     debitAccount: "rent",
     debitName: "Rent expense",
     creditAccount: "bank",
     creditName: "Bank",
     explanation:
       "Rent expense increases, so it is debited. Money in the bank decreases, so Bank is credited."
+  },
+  {
+    description: "receives payment for services provided",
+    paymentText: "directly into its business bank account",
+    debitAccount: "bank",
+    debitName: "Bank",
+    creditAccount: "sales",
+    creditName: "Sales",
+    explanation:
+    "Money in the bank increases, so Bank is debited. Sales income increases, so Sales is credited."
   }
 ];
-
+  
 let currentTransaction = transactionTypes[0];
 
 function generateTransaction() {
@@ -66,9 +78,8 @@ function generateTransaction() {
     currentTransaction = transactionTypes[typeIndex];
 
     transactionText.textContent =
-        `${businesses[businessIndex]} ${currentTransaction.description} for ` +
-        `${pounds.format(transactionAmount)} and pays immediately ` +
-        "from its business bank account.";
+      `${businesses[businessIndex]} ${currentTransaction.description} for ` +
+      `${pounds.format(transactionAmount)} ${currentTransaction.paymentText}.`;
 
         journalForm.reset();
         journalFeedback.hidden = true;
