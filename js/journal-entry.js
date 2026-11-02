@@ -23,6 +23,25 @@ const pounds = new Intl.NumberFormat("en-GB", {
 
 let transactionAmount = 0;
 
+const transactionTypes = [
+  {
+    description: "buys equipment",
+    debitAccount: "equipment",
+    debitName: "Equipment",
+    explanation:
+      "Equipment increases, so it is debited. Money in the bank decreases, so Bank is credited."
+  },
+  {
+    description: "pays this month’s rent",
+    debitAccount: "rent",
+    debitName: "Rent expense",
+    explanation:
+      "Rent expense increases, so it is debited. Money in the bank decreases, so Bank is credited."
+  }
+];
+
+let currentTransaction = transactionTypes[0];
+
 function generateTransaction() {
   const businessIndex = Math.floor(Math.random() * businesses.length);
 
@@ -33,14 +52,17 @@ function generateTransaction() {
     transactionAmount = (Math.floor(Math.random() * 36) + 5) * 50;
   } while (transactionAmount === previousAmount);
 
-  transactionText.textContent =
-    `${businesses[businessIndex]} buys equipment for ` +
-    `${pounds.format(transactionAmount)} and pays immediately ` +
-    "from its business bank account.";
+  const typeIndex = Math.floor(Math.random() * transactionTypes.length);
+    currentTransaction = transactionTypes[typeIndex];
 
-  journalForm.reset();
-  journalFeedback.hidden = true;
-}
+    transactionText.textContent =
+        `${businesses[businessIndex]} ${currentTransaction.description} for ` +
+        `${pounds.format(transactionAmount)} and pays immediately ` +
+        "from its business bank account.";
+
+        journalForm.reset();
+        journalFeedback.hidden = true;
+    }
 
 function showFeedback(message, isCorrect) {
   journalFeedback.textContent = message;
@@ -98,7 +120,7 @@ journalForm.addEventListener("submit", (event) => {
 
   if (rows[0].account === rows[1].account) {
     showFeedback(
-      "Choose two different accounts. Think about what the café gained and how it paid.",
+      "Choose two different accounts. Think about what the business paid for and how it paid.",
       false
     );
     return;
@@ -121,41 +143,41 @@ journalForm.addEventListener("submit", (event) => {
     return;
   }
 
-  const equipmentRow = rows.find((row) => row.account === "equipment");
+  const debitRow = rows.find((row) => row.account === currentTransaction.debitAccount);
   const bankRow = rows.find((row) => row.account === "bank");
 
-  if (!equipmentRow || !bankRow) {
+  if (!debitRow || !bankRow) {
     showFeedback(
-      "Your entry balances, but check the accounts. The café gained equipment and paid from its bank account.",
+      `Your entry balances, but check the accounts. This transaction affects ${currentTransaction.debitName} and Bank.`,
       false
     );
     return;
   }
 
-  if (equipmentRow.debit === 0 || bankRow.credit === 0) {
+  if (debitRow.debit === 0 || bankRow.credit === 0) {
     showFeedback(
-      "The accounts are correct, but the sides are reversed. An increase in equipment is a debit; a decrease in bank is a credit.",
+      "The accounts are correct, but the sides are reversed. " + currentTransaction.explanation,
       false
     );
     return;
   }
 
   if (
-    equipmentRow.debit !== transactionAmount ||
+    debitRow.debit !== transactionAmount ||
     bankRow.credit !== transactionAmount
   ) {
     showFeedback(
       "The accounts and sides are correct. Check the transaction amount: " +
-      `the equipment cost ${pounds.format(transactionAmount)}.`,
+      `${pounds.format(transactionAmount)}.`,
       false
     );
     return;
   }
 
   showFeedback(
-    `Correct! Debit Equipment ${pounds.format(transactionAmount)} ` +
+    `Correct! Debit ${currentTransaction.debitName} ${pounds.format(transactionAmount)} ` +
     `and credit Bank ${pounds.format(transactionAmount)}. ` +
-    "Equipment increases, while money in the bank decreases.",
+    currentTransaction.explanation,
     true
   );
 });
