@@ -38,6 +38,8 @@ const transactionTypes = [
     debitName: "Equipment",
     creditAccount: "bank",
     creditName: "Bank",
+    hint:
+      "Think about the asset the business gained and the asset it used to pay. Increases in assets are debits; decreases are credits.",
     explanation:
       "Equipment increases, so it is debited. Money in the bank decreases, so Bank is credited."
   },
@@ -48,6 +50,8 @@ const transactionTypes = [
     debitName: "Rent expense",
     creditAccount: "bank",
     creditName: "Bank",
+    hint:
+      "Think about the expense incurred and the money leaving the bank. Expenses increase with a debit; assets decrease with a credit.",
     explanation:
       "Rent expense increases, so it is debited. Money in the bank decreases, so Bank is credited."
   },
@@ -58,8 +62,10 @@ const transactionTypes = [
     debitName: "Bank",
     creditAccount: "sales",
     creditName: "Sales",
+    hint:
+      "Think about the money received and the income earned. Assets increase with a debit; income increases with a credit.",
     explanation:
-    "Money in the bank increases, so Bank is debited. Sales income increases, so Sales is credited."
+      "Money in the bank increases, so Bank is debited. Sales income increases, so Sales is credited."
   }
 ];
   
@@ -84,8 +90,16 @@ function generateTransaction() {
 
   journalForm.reset();
   journalFeedback.hidden = true;
+  hintPanel.hidden = true;
+  hintPanel.textContent = "";
   setEntryLocked(false);
   newTransactionButton.textContent = "New transaction";
+}
+
+function advanceQuestion() {
+  generateTransaction();
+  updateTotals();
+  document.querySelector("#account-1").focus();
 }
 
 function setEntryLocked(isLocked) {
@@ -224,6 +238,9 @@ journalForm.addEventListener("submit", (event) => {
   newTransactionButton.focus();
 });
 
+const hintButton = document.querySelector("#show-hint");
+const hintPanel = document.querySelector("#journal-hint");
+
 // Clear old feedback when the student changes their entry.
 journalForm.addEventListener("input", () => {
   journalFeedback.hidden = true;
@@ -233,9 +250,7 @@ journalForm.addEventListener("change", () => {
   journalFeedback.hidden = true;
 });
 
-newTransactionButton.addEventListener("click", generateTransaction);
-
-generateTransaction();
+newTransactionButton.addEventListener("click", advanceQuestion);
 
 const totalDebitsDisplay = document.querySelector("#total-debits");
 const totalCreditsDisplay = document.querySelector("#total-credits");
@@ -286,7 +301,10 @@ function updateTotals() {
 
 journalForm.addEventListener("input", updateTotals);
 
-// Reset totals after the new transaction clears the form.
-newTransactionButton.addEventListener("click", updateTotals);
+hintButton.addEventListener("click", () => {
+  hintPanel.textContent = currentTransaction.hint;
+  hintPanel.hidden = false;
+});
 
+generateTransaction();
 updateTotals();
