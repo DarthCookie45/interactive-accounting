@@ -92,6 +92,8 @@ function generateTransaction() {
   journalFeedback.hidden = true;
   hintPanel.hidden = true;
   hintPanel.textContent = "";
+  hintButton.textContent = "Show hint";
+  hintButton.setAttribute("aria-expanded", "false");
   setEntryLocked(false);
   newTransactionButton.textContent = "New transaction";
 }
@@ -302,8 +304,13 @@ function updateTotals() {
 journalForm.addEventListener("input", updateTotals);
 
 hintButton.addEventListener("click", () => {
-  hintPanel.textContent = currentTransaction.hint;
-  hintPanel.hidden = false;
+  const showHint = hintPanel.hidden;
+
+  hintPanel.hidden = !showHint;
+  hintPanel.textContent = showHint ? currentTransaction.hint : "";
+
+  hintButton.textContent = showHint ? "Hide hint" : "Show hint";
+  hintButton.setAttribute("aria-expanded", String(showHint));
 });
 
 generateTransaction();
