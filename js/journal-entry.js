@@ -66,7 +66,19 @@ const transactionTypes = [
       "Think about the money received and the income earned. Assets increase with a debit; income increases with a credit.",
     explanation:
       "Money in the bank increases, so Bank is debited. Sales income increases, so Sales is credited."
-  }
+  },
+  {
+  description: "receives a capital contribution from its owner",
+  paymentText: "directly into its business bank account",
+  debitAccount: "bank",
+  debitName: "Bank",
+  creditAccount: "capital",
+  creditName: "Owner’s capital",
+  explanation:
+    "Money in the bank increases, so Bank is debited. The owner’s investment increases capital, so Owner’s capital is credited. This is not sales income.",
+  hint:
+    "The business receives money, but it has not earned it from a customer. Think about the owner’s investment and the increase in the bank balance."
+}
 ];
   
 let currentTransaction = transactionTypes[0];
