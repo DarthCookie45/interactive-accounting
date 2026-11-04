@@ -7,7 +7,9 @@ const accounts = [
     destination: "profit-loss",
     description: "Income earned from selling goods or providing services.",
     explanation:
-      "Sales contributes to the profit or loss for the period. It is reported as income in the statement of profit or loss."
+      "Sales contributes to the profit or loss for the period. It is reported as income in the statement of profit or loss.",
+    example:
+    "Sales income of £8,000 is reported in the statement of profit or loss for the period.",
   },
   {
     name: "Rent expense",
@@ -15,7 +17,9 @@ const accounts = [
     destination: "profit-loss",
     description: "The cost of using rented premises during the period.",
     explanation:
-      "Rent expense reduces the profit for the period. It belongs in the statement of profit or loss."
+      "Rent expense reduces the profit for the period. It belongs in the statement of profit or loss.",
+    example:
+    "Rent expense of £1,200 is deducted when calculating profit or loss for the period.",
   },
   {
     name: "Equipment",
@@ -23,7 +27,9 @@ const accounts = [
     destination: "financial-position",
     description: "Items the business uses over more than one accounting period.",
     explanation:
-      "Equipment is a resource used by the business. Its carrying amount appears as a non-current asset in the statement of financial position."
+      "Equipment is a resource used by the business. Its carrying amount appears as a non-current asset in the statement of financial position.",
+    example:
+    "Equipment costing £3,000 with accumulated depreciation of £600 has a carrying amount of £2,400 in the statement of financial position.",
   },
   {
     name: "Bank",
@@ -31,7 +37,9 @@ const accounts = [
     destination: "financial-position",
     description: "Money held in the business bank account.",
     explanation:
-      "A positive bank balance is a current asset in the statement of financial position. A bank overdraft would usually be shown as a current liability."
+      "A positive bank balance is a current asset in the statement of financial position. A bank overdraft would usually be shown as a current liability.",
+    example:
+    "A positive bank balance of £950 at the reporting date is shown as a current asset.",
   },
   {
     name: "Bank loan",
@@ -39,7 +47,9 @@ const accounts = [
     destination: "financial-position",
     description: "Money the business owes to a lender.",
     explanation:
-      "The outstanding loan appears in the statement of financial position. Amounts due within twelve months are normally current liabilities; longer-term amounts are normally non-current liabilities."
+      "The outstanding loan appears in the statement of financial position. Amounts due within twelve months are normally current liabilities; longer-term amounts are normally non-current liabilities.",
+    example:
+    "A £5,000 loan with £1,000 due within twelve months and £4,000 due later is split between current and non-current liabilities, assuming the business has the right to defer the later repayment.",
   },
   {
     name: "Owner’s capital",
@@ -47,7 +57,9 @@ const accounts = [
     destination: "financial-position",
     description: "The owner’s interest in the sole trader’s business.",
     explanation:
-      "Closing capital appears in the statement of financial position. It reflects the owner’s investment, profit or loss, and drawings."
+      "Closing capital appears in the statement of financial position. It reflects the owner’s investment, profit or loss, and drawings.",
+    example:
+    "Opening capital of £5,000 plus profit of £2,000, less drawings of £500, gives closing capital of £6,500, assuming no additional investment.",
   },
   {
     name: "Drawings",
@@ -56,7 +68,9 @@ const accounts = [
     description:
         "Money or other assets taken from the business by its owner for personal use.",
     explanation:
-        "Drawings reduce the owner’s capital. They are included when calculating closing capital, which appears in the statement of financial position. Drawings are not an expense in the statement of profit or loss."
+        "Drawings reduce the owner’s capital. They are included when calculating closing capital, which appears in the statement of financial position. Drawings are not an expense in the statement of profit or loss.",
+    example:
+    "If the owner withdraws £500 for personal use, that £500 is deducted when calculating closing capital. It does not reduce the business’s profit.",
 }
 ];
 
@@ -70,6 +84,9 @@ const accountCategory = document.querySelector(
 );
 const accountExplanation = document.querySelector(
   "#statement-account-explanation"
+);
+const accountExample = document.querySelector(
+  "#statement-account-example"
 );
 
 const destinations = document.querySelectorAll(".statement-destination");
@@ -87,6 +104,7 @@ function selectAccount(index) {
 
   accountExplanation.textContent =
     `${destinationName}. ${account.explanation}`;
+    accountExample.textContent = account.example;
 
   accountList.querySelectorAll("button").forEach((button, buttonIndex) => {
     const isSelected = buttonIndex === index;

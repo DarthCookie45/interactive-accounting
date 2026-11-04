@@ -1593,3 +1593,16 @@ body {
 .statement-destination.is-highlighted {
   border-color: #5b3cc4;
 }
+
+.statement-example {
+  background-color: #f4edff;
+  border-radius: 12px;
+  padding: 14px;
+}
+
+.statement-example h3 {
+  color: #5b3cc4;
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
