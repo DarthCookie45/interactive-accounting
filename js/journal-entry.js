@@ -108,6 +108,19 @@ const transactionTypes = [
       "Money in the bank increases, so Bank is debited. The amount owed to the lender increases, so Bank loan is credited. Borrowing money does not create sales income.",
     hint:
       "The business receives money that it must repay. Think about the increase in its bank balance and the increase in its liability. Liabilities increase with a credit."
+  },
+  {
+    topic: "loan-repayment",
+    buildQuestion: (business, amount) =>
+      `${business} repays ${amount} of its bank loan from its business bank account. This repayment is principal only; there is no interest.`,
+    debitAccount: "loan",
+    debitName: "Bank loan",
+    creditAccount: "bank",
+    creditName: "Bank",
+    explanation:
+      "The amount owed to the lender decreases, so Bank loan is debited. Money in the bank decreases, so Bank is credited. Repaying loan principal is not a business expense.",
+    hint:
+      "Both the bank balance and the amount owed decrease. Assets decrease with a credit; liabilities decrease with a debit."
   }
 ];
   
