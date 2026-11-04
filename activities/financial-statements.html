@@ -37,6 +37,26 @@
         </p>
       </header>
 
+      <div class="d-flex flex-wrap gap-2 mb-3" aria-label="Learning mode">
+        <button
+          id="statements-explore-mode"
+          class="btn btn-primary"
+          type="button"
+          aria-pressed="true"
+        >
+          Explore
+        </button>
+
+        <button
+          id="statements-practice-mode"
+          class="btn btn-outline-primary"
+          type="button"
+          aria-pressed="false"
+        >
+          Practise
+        </button>
+      </div>
+
       <div class="statements-layout">
         <section
           class="statements-panel statements-accounts"
@@ -54,7 +74,7 @@
         >
           <p class="hero-eyebrow">FOLLOW THE CONNECTION</p>
 
-          <h2 id="statement-detail-heading">Select an account</h2>
+          <h2 id="statement-detail-heading" tabindex="-1">Select an account</h2>
 
           <p id="statement-account-description">
             Choose an account on the left to explore its destination.
@@ -114,6 +134,58 @@
           </div>
         </section>
       </div>
+
+      <section
+        id="statements-practice"
+        class="statements-panel statements-detail"
+        aria-labelledby="practice-heading"
+        hidden
+      >
+        <h2 id="practice-heading" tabindex="-1">
+          Where does this account belong?
+        </h2>
+
+        <p>
+          Choose the statement this account contributes to. For Drawings, choose
+          the statement showing closing capital.
+        </p>
+
+        <p id="practice-account" class="fs-3 fw-bold"></p>
+
+        <div class="d-flex flex-wrap gap-2">
+          <button
+            class="btn btn-outline-primary"
+            type="button"
+            data-statement-answer="profit-loss"
+          >
+            Statement of profit or loss
+          </button>
+
+          <button
+            class="btn btn-outline-primary"
+            type="button"
+            data-statement-answer="financial-position"
+          >
+            Statement of financial position
+          </button>
+        </div>
+
+        <div
+          id="statements-practice-feedback"
+          class="alert mt-3"
+          role="status"
+          hidden
+        ></div>
+
+        <button
+          id="statements-next-account"
+          class="btn btn-primary mt-3"
+          type="button"
+          hidden
+        >
+          Next account
+        </button>
+      </section>
     </main>
 
     <script src="../js/financial-statements.js"></script>

@@ -162,3 +162,124 @@ exampleButton.addEventListener("click", () => {
 });
 
 selectAccount(0);
+
+const exploreModeButton = document.querySelector(
+  "#statements-explore-mode"
+);
+const practiceModeButton = document.querySelector(
+  "#statements-practice-mode"
+);
+const exploreLayout = document.querySelector(".statements-layout");
+const practicePanel = document.querySelector("#statements-practice");
+const practiceHeading = document.querySelector("#practice-heading");
+const practiceAccountName = document.querySelector("#practice-account");
+const practiceFeedback = document.querySelector(
+  "#statements-practice-feedback"
+);
+const nextAccountButton = document.querySelector(
+  "#statements-next-account"
+);
+const answerButtons = document.querySelectorAll(
+  "[data-statement-answer]"
+);
+
+let practiceAccount = null;
+let practiceAnswered = false;
+
+function nextPracticeAccount() {
+  // Avoid showing the same account twice in succession.
+  const availableAccounts = accounts.filter((account) => {
+    return account !== practiceAccount;
+  });
+
+  const randomIndex = Math.floor(
+    Math.random() * availableAccounts.length
+  );
+
+  practiceAccount = availableAccounts[randomIndex];
+  practiceAnswered = false;
+
+  practiceAccountName.textContent = practiceAccount.name;
+  practiceFeedback.hidden = true;
+  practiceFeedback.textContent = "";
+  nextAccountButton.hidden = true;
+
+  answerButtons.forEach((button) => {
+    button.disabled = false;
+  });
+}
+
+function setPracticeMode(isPractice) {
+  exploreLayout.hidden = isPractice;
+  practicePanel.hidden = !isPractice;
+
+  exploreModeButton.setAttribute(
+    "aria-pressed",
+    String(!isPractice)
+  );
+  practiceModeButton.setAttribute(
+    "aria-pressed",
+    String(isPractice)
+  );
+
+  exploreModeButton.className = isPractice
+    ? "btn btn-outline-primary"
+    : "btn btn-primary";
+
+  practiceModeButton.className = isPractice
+    ? "btn btn-primary"
+    : "btn btn-outline-primary";
+
+  if (isPractice) {
+    nextPracticeAccount();
+    practiceHeading.focus();
+  } else {
+    detailHeading.focus();
+  }
+}
+
+answerButtons.forEach((button) => {
+  button.addEventListener("click", () => {
+    if (practiceAnswered) return;
+
+    const isCorrect =
+      button.dataset.statementAnswer === practiceAccount.destination;
+
+    const destinationName =
+      practiceAccount.destination === "profit-loss"
+        ? "statement of profit or loss"
+        : "statement of financial position";
+
+    practiceFeedback.textContent = isCorrect
+      ? `Correct! ${practiceAccount.explanation}`
+      : `This account contributes to the ${destinationName}. ` +
+        practiceAccount.explanation;
+
+    practiceFeedback.className = isCorrect
+      ? "alert alert-success mt-3"
+      : "alert alert-info mt-3";
+
+    practiceFeedback.hidden = false;
+    practiceAnswered = true;
+
+    answerButtons.forEach((answerButton) => {
+      answerButton.disabled = true;
+    });
+
+    nextAccountButton.hidden = false;
+    nextAccountButton.focus();
+  });
+});
+
+exploreModeButton.addEventListener("click", () => {
+  setPracticeMode(false);
+});
+
+practiceModeButton.addEventListener("click", () => {
+  setPracticeMode(true);
+});
+
+nextAccountButton.addEventListener("click", () => {
+  nextPracticeAccount();
+  practiceHeading.focus();
+});

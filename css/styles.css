@@ -1606,3 +1606,13 @@ body {
   font-weight: 700;
   margin-bottom: 8px;
 }
+
+.statements-layout[hidden] {
+  display: none;
+}
+
+#practice-account {
+  background-color: #f4edff;
+  border-radius: 12px;
+  padding: 16px;
+}
