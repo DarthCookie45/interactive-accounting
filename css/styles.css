@@ -1498,3 +1498,54 @@ body {
     padding: 16px;
   }
 }
+
+
+/* Financial Statements Map */
+.statements-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+  gap: 24px;
+}
+
+.statements-panel {
+  border: 2px solid #1f2937;
+  border-radius: 20px;
+  min-width: 0;
+  padding: clamp(18px, 2.5vw, 28px);
+}
+
+.statements-accounts {
+  background-color: #eee8ff;
+}
+
+.statements-detail {
+  background-color: white;
+  box-shadow: 6px 6px 0 #1f2937;
+}
+
+.statements-panel h2 {
+  font-size: 1.5rem;
+  font-weight: 800;
+}
+
+.statement-destination {
+  background-color: #dff8f4;
+  border-radius: 12px;
+  margin-top: 16px;
+  padding: 16px;
+}
+
+.statement-destination h3 {
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.statement-destination p {
+  margin-bottom: 0;
+}
+
+@media (max-width: 767px) {
+  .statements-layout {
+    grid-template-columns: 1fr;
+  }
+}

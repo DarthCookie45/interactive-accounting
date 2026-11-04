@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en-GB">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Financial Statements Map | Interactive Accounting</title>
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../css/styles.css" />
+  </head>
+
+  <body>
+    <header>
+      <nav class="navbar navbar-light bg-light">
+        <div class="container">
+          <a class="navbar-brand fw-bold" href="../index.html">
+            Interactive Accounting
+          </a>
+
+          <a class="btn btn-outline-primary" href="../index.html#activities">
+            Back to activities
+          </a>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container statements-page py-3">
+      <header class="mb-3">
+        <p class="hero-eyebrow">SEE WHERE THE ACCOUNTS BELONG</p>
+        <h1>Financial Statements Map</h1>
+        <p>
+          Explore how accounts help tell the story of a sole trader’s business.
+        </p>
+      </header>
+
+      <div class="statements-layout">
+        <section
+          class="statements-panel statements-accounts"
+          aria-labelledby="accounts-heading"
+        >
+          <h2 id="accounts-heading">Explore the accounts</h2>
+          <p>Account choices will appear here in the next step.</p>
+
+          <div id="statement-account-list"></div>
+        </section>
+
+        <section
+          class="statements-panel statements-detail"
+          aria-labelledby="statement-detail-heading"
+        >
+          <p class="hero-eyebrow">FOLLOW THE CONNECTION</p>
+          <h2 id="statement-detail-heading">Where does it belong?</h2>
+          <p>
+            Each account contributes to a financial statement. We’ll explore its
+            destination and explain why it belongs there.
+          </p>
+
+          <div class="statement-destination">
+            <h3>Statement of profit or loss</h3>
+            <p>
+              Shows income and expenses over a period, helping calculate the
+              business’s profit or loss.
+            </p>
+          </div>
+
+          <div class="statement-destination">
+            <h3>Statement of financial position</h3>
+            <p>
+              Shows assets, liabilities and the owner’s capital at a particular
+              date.
+            </p>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <script src="../js/financial-statements.js"></script>
+  </body>
+</html>
