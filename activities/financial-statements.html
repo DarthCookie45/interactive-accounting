@@ -68,7 +68,21 @@
           >
             <p id="statement-account-category" class="fw-bold"></p>
             <p id="statement-account-explanation" class="mb-0"></p>
-            <div class="statement-example mt-3">
+            <button
+              class="btn btn-outline-primary mt-3"
+              id="toggle-statement-example"
+              type="button"
+              aria-controls="statement-example-panel"
+              aria-expanded="false"
+            >
+              Show example
+            </button>
+
+            <div
+              id="statement-example-panel"
+              class="statement-example mt-3"
+              hidden
+            >
               <h3>Example</h3>
               <p id="statement-account-example" class="mb-0"></p>
             </div>

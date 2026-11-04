@@ -89,6 +89,14 @@ const accountExample = document.querySelector(
   "#statement-account-example"
 );
 
+const exampleButton = document.querySelector(
+  "#toggle-statement-example"
+);
+
+const examplePanel = document.querySelector(
+  "#statement-example-panel"
+);
+
 const destinations = document.querySelectorAll(".statement-destination");
 
 function selectAccount(index) {
@@ -105,6 +113,9 @@ function selectAccount(index) {
   accountExplanation.textContent =
     `${destinationName}. ${account.explanation}`;
     accountExample.textContent = account.example;
+    examplePanel.hidden = true;
+    exampleButton.textContent = "Show example";
+    exampleButton.setAttribute("aria-expanded", "false");
 
   accountList.querySelectorAll("button").forEach((button, buttonIndex) => {
     const isSelected = buttonIndex === index;
@@ -137,6 +148,17 @@ accounts.forEach((account, index) => {
   button.addEventListener("click", () => selectAccount(index));
 
   accountList.append(button);
+});
+
+exampleButton.addEventListener("click", () => {
+  const showExample = examplePanel.hidden;
+
+  examplePanel.hidden = !showExample;
+  exampleButton.textContent = showExample
+    ? "Hide example"
+    : "Show example";
+
+  exampleButton.setAttribute("aria-expanded", String(showExample));
 });
 
 selectAccount(0);
