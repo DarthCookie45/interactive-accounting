@@ -33,8 +33,8 @@ let transactionAmount = 0;
 const transactionTypes = [
   {
     topic: "equipment",
-    description: "buys equipment",
-    paymentText: "and pays immediately from its business bank account",
+    buildQuestion: (business, amount) =>
+      `${business} buys equipment for ${amount}, paying immediately from its business bank account.`,
     debitAccount: "equipment",
     debitName: "Equipment",
     creditAccount: "bank",
@@ -46,8 +46,8 @@ const transactionTypes = [
   },
   {
     topic: "rent",
-    description: "pays this month’s rent",
-    paymentText: "and pays immediately from its business bank account",
+    buildQuestion: (business, amount) =>
+      `${business} pays ${amount} from its business bank account for this month’s rent.`,
     debitAccount: "rent",
     debitName: "Rent expense",
     creditAccount: "bank",
@@ -59,8 +59,8 @@ const transactionTypes = [
   },
   {
     topic: "sales",
-    description: "receives payment for services provided",
-    paymentText: "directly into its business bank account",
+    buildQuestion: (business, amount) =>
+      `${business} provides services for ${amount} and receives payment immediately into its business bank account.`,
     debitAccount: "bank",
     debitName: "Bank",
     creditAccount: "sales",
@@ -72,8 +72,8 @@ const transactionTypes = [
   },
   {
     topic: "capital",
-    description: "receives a capital contribution from its owner",
-    paymentText: "directly into its business bank account",
+    buildQuestion: (business, amount) =>
+      `${business} receives ${amount} into its business bank account as a capital contribution from its owner.`,
     debitAccount: "bank",
     debitName: "Bank",
     creditAccount: "capital",
@@ -85,8 +85,8 @@ const transactionTypes = [
   },
   {
     topic: "drawings",
-    description: "records a personal withdrawal by its owner",
-    paymentText: "paid directly from its business bank account",
+    buildQuestion: (business, amount) =>
+      `${business} records its owner withdrawing ${amount} from the business bank account for personal use.`,
     debitAccount: "drawings",
     debitName: "Drawings",
     creditAccount: "bank",
@@ -120,10 +120,11 @@ function generateTransaction() {
 const typeIndex = Math.floor(Math.random() * availableTypes.length);
 currentTransaction = availableTypes[typeIndex];
 
-    transactionText.textContent =
-      `${businesses[businessIndex]} ${currentTransaction.description} for ` +
-      `${pounds.format(transactionAmount)} ${currentTransaction.paymentText}.`;
-
+transactionText.textContent = currentTransaction.buildQuestion(
+  businesses[businessIndex],
+  pounds.format(transactionAmount)
+);
+  
   journalForm.reset();
   journalFeedback.hidden = true;
   hintPanel.hidden = true;
