@@ -95,6 +95,19 @@ const transactionTypes = [
       "The owner’s personal withdrawal increases Drawings, so Drawings is debited. Money in the business bank account decreases, so Bank is credited. Drawings are not a business expense.",
     hint:
       "The money is being used personally by the owner, rather than to run the business. Think about the account for personal withdrawals and the money leaving Bank."
+  },
+  {
+    topic: "loan",
+    buildQuestion: (business, amount) =>
+      `${business} receives a bank loan of ${amount} into its business bank account.`,
+    debitAccount: "bank",
+    debitName: "Bank",
+    creditAccount: "loan",
+    creditName: "Bank loan",
+    explanation:
+      "Money in the bank increases, so Bank is debited. The amount owed to the lender increases, so Bank loan is credited. Borrowing money does not create sales income.",
+    hint:
+      "The business receives money that it must repay. Think about the increase in its bank balance and the increase in its liability. Liabilities increase with a credit."
   }
 ];
   
