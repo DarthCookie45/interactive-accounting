@@ -43,7 +43,7 @@
           aria-labelledby="accounts-heading"
         >
           <h2 id="accounts-heading">Explore the accounts</h2>
-          <p>Account choices will appear here in the next step.</p>
+          <p>Select an account to explore where it appears and why.</p>
 
           <div id="statement-account-list"></div>
         </section>
@@ -53,25 +53,45 @@
           aria-labelledby="statement-detail-heading"
         >
           <p class="hero-eyebrow">FOLLOW THE CONNECTION</p>
-          <h2 id="statement-detail-heading">Where does it belong?</h2>
-          <p>
-            Each account contributes to a financial statement. We’ll explore its
-            destination and explain why it belongs there.
+
+          <h2 id="statement-detail-heading">Select an account</h2>
+
+          <p id="statement-account-description">
+            Choose an account on the left to explore its destination.
           </p>
 
-          <div class="statement-destination">
+          <div
+            id="statement-account-info"
+            class="statement-account-info"
+            aria-live="polite"
+            aria-atomic="true"
+          >
+            <p id="statement-account-category" class="fw-bold"></p>
+            <p id="statement-account-explanation" class="mb-0"></p>
+          </div>
+
+          <div id="destination-profit-loss" class="statement-destination">
             <h3>Statement of profit or loss</h3>
             <p>
               Shows income and expenses over a period, helping calculate the
               business’s profit or loss.
             </p>
+            <p class="statement-match fw-bold mt-2" hidden>
+              This account belongs here.
+            </p>
           </div>
 
-          <div class="statement-destination">
+          <div
+            id="destination-financial-position"
+            class="statement-destination"
+          >
             <h3>Statement of financial position</h3>
             <p>
               Shows assets, liabilities and the owner’s capital at a particular
               date.
+            </p>
+            <p class="statement-match fw-bold mt-2" hidden>
+              This account belongs here.
             </p>
           </div>
         </section>

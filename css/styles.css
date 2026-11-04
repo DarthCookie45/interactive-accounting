@@ -1549,3 +1549,47 @@ body {
     grid-template-columns: 1fr;
   }
 }
+
+#statement-account-list {
+  display: grid;
+  gap: 10px;
+}
+
+.statement-account-button {
+  background-color: white;
+  border: 2px solid #1f2937;
+  border-radius: 12px;
+  color: #1f2937;
+  font: inherit;
+  font-weight: 700;
+  padding: 12px 16px;
+  text-align: left;
+}
+
+.statement-account-button:hover {
+  background-color: #f4edff;
+}
+
+.statement-account-button.is-selected {
+  background-color: #5b3cc4;
+  color: white;
+}
+
+.statement-account-button:focus-visible {
+  outline: 3px solid #5b3cc4;
+  outline-offset: 3px;
+}
+
+.statement-account-info {
+  border-left: 4px solid #5b3cc4;
+  margin-block: 16px;
+  padding-left: 16px;
+}
+
+.statement-destination {
+  border: 2px solid transparent;
+}
+
+.statement-destination.is-highlighted {
+  border-color: #5b3cc4;
+}
