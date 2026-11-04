@@ -48,7 +48,16 @@ const accounts = [
     description: "The owner’s interest in the sole trader’s business.",
     explanation:
       "Closing capital appears in the statement of financial position. It reflects the owner’s investment, profit or loss, and drawings."
-  }
+  },
+  {
+    name: "Drawings",
+    category: "Deduction from capital",
+    destination: "financial-position",
+    description:
+        "Money or other assets taken from the business by its owner for personal use.",
+    explanation:
+        "Drawings reduce the owner’s capital. They are included when calculating closing capital, which appears in the statement of financial position. Drawings are not an expense in the statement of profit or loss."
+}
 ];
 
 const accountList = document.querySelector("#statement-account-list");
@@ -90,8 +99,13 @@ function selectAccount(index) {
     const isMatch = destination.id === `destination-${account.destination}`;
 
     destination.classList.toggle("is-highlighted", isMatch);
-    destination.querySelector(".statement-match").hidden = !isMatch;
-  });
+    const matchLabel = destination.querySelector(".statement-match");
+    
+    matchLabel.hidden = !isMatch;
+    matchLabel.textContent = account.name === "Drawings"
+    ? "This account reduces the closing capital shown here."
+    : "This account belongs here.";
+    });
 }
 
 accounts.forEach((account, index) => {
