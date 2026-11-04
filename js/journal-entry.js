@@ -32,6 +32,7 @@ let transactionAmount = 0;
 
 const transactionTypes = [
   {
+    topic: "equipment",
     description: "buys equipment",
     paymentText: "and pays immediately from its business bank account",
     debitAccount: "equipment",
@@ -44,6 +45,7 @@ const transactionTypes = [
       "Equipment increases, so it is debited. Money in the bank decreases, so Bank is credited."
   },
   {
+    topic: "rent",
     description: "pays this month’s rent",
     paymentText: "and pays immediately from its business bank account",
     debitAccount: "rent",
@@ -56,6 +58,7 @@ const transactionTypes = [
       "Rent expense increases, so it is debited. Money in the bank decreases, so Bank is credited."
   },
   {
+    topic: "sales",
     description: "receives payment for services provided",
     paymentText: "directly into its business bank account",
     debitAccount: "bank",
@@ -68,6 +71,7 @@ const transactionTypes = [
       "Money in the bank increases, so Bank is debited. Sales income increases, so Sales is credited."
   },
   {
+    topic: "capital",
     description: "receives a capital contribution from its owner",
     paymentText: "directly into its business bank account",
     debitAccount: "bank",
@@ -80,6 +84,7 @@ const transactionTypes = [
       "The business receives money, but it has not earned it from a customer. Think about the owner’s investment and the increase in the bank balance."
   },
   {
+    topic: "drawings",
     description: "records a personal withdrawal by its owner",
     paymentText: "paid directly from its business bank account",
     debitAccount: "drawings",
@@ -105,8 +110,15 @@ function generateTransaction() {
     transactionAmount = (Math.floor(Math.random() * 36) + 5) * 50;
   } while (transactionAmount === previousAmount);
 
-  const typeIndex = Math.floor(Math.random() * transactionTypes.length);
-    currentTransaction = transactionTypes[typeIndex];
+  const availableTypes = transactionTypes.filter((transaction) => {
+    return (
+      topicSelector.value === "all" ||
+      transaction.topic === topicSelector.value
+    );
+  });
+
+const typeIndex = Math.floor(Math.random() * availableTypes.length);
+currentTransaction = availableTypes[typeIndex];
 
     transactionText.textContent =
       `${businesses[businessIndex]} ${currentTransaction.description} for ` +
@@ -281,6 +293,7 @@ newTransactionButton.addEventListener("click", advanceQuestion);
 const totalDebitsDisplay = document.querySelector("#total-debits");
 const totalCreditsDisplay = document.querySelector("#total-credits");
 const balanceStatus = document.querySelector("#balance-status");
+const topicSelector = document.querySelector("#transaction-topic");
 
 const moneyWithPennies = new Intl.NumberFormat("en-GB", {
   style: "currency",
@@ -335,6 +348,11 @@ hintButton.addEventListener("click", () => {
 
   hintButton.textContent = showHint ? "Hide hint" : "Show hint";
   hintButton.setAttribute("aria-expanded", String(showHint));
+});
+
+topicSelector.addEventListener("change", () => {
+  generateTransaction();
+  updateTotals();
 });
 
 generateTransaction();

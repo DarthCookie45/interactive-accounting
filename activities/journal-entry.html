@@ -42,8 +42,24 @@
         class="journal-transaction mb-3"
         aria-labelledby="transaction-title"
       >
+        <div class="journal-topic">
+          <label class="form-label fw-bold" for="transaction-topic">
+            Practise a topic
+          </label>
+
+          <select class="form-select" id="transaction-topic">
+            <option value="all">- Mixed practice -</option>
+            <option value="drawings">Drawings</option>
+            <option value="equipment">Equipment purchases</option>
+            <option value="capital">Owner’s capital</option>
+            <option value="rent">Rent payments</option>
+            <option value="sales">Sales receipts</option>
+          </select>
+        </div>
+        <div class="journal-scenario">
         <h2 id="transaction-title">Your transaction</h2>
         <p id="journal-transaction" class="mb-0"></p>
+        </div>
       </section>
 
       <section class="journal-builder" aria-labelledby="entry-title">

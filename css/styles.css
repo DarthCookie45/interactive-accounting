@@ -1371,6 +1371,40 @@ body {
 
 
 /* Journal Entry Constructor */
+.journal-page .journal-transaction {
+  display: grid;
+  grid-template-columns: minmax(200px, 260px) minmax(0, 1fr);
+  align-items: center;
+  gap: 16px 24px;
+}
+
+.journal-topic,
+.journal-scenario {
+  min-width: 0;
+}
+
+.journal-scenario {
+  align-self: stretch;
+  border-left: 1px solid #1f2937;
+  padding-left: 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+@media (max-width: 767px) {
+  .journal-page .journal-transaction {
+    grid-template-columns: 1fr;
+  }
+
+  .journal-scenario {
+    border-left: 0;
+    border-top: 1px solid #1f2937;
+    padding-left: 0;
+    padding-top: 16px;
+  }
+}
+
 .journal-transaction,
 .journal-builder {
   border: 2px solid #1f2937;
