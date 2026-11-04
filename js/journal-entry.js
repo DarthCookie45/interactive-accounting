@@ -126,30 +126,43 @@ const transactionTypes = [
   
 let currentTransaction = transactionTypes[0];
 
+let mixedPracticeQueue = [];
+
+function chooseTransactionType() {
+  if (topicSelector.value !== "all") {
+    return transactionTypes.find((transaction) => {
+      return transaction.topic === topicSelector.value;
+    });
+  }
+
+  if (mixedPracticeQueue.length === 0) {
+    mixedPracticeQueue = [...transactionTypes];
+
+    // Shuffle the copied array using Fisher–Yates.
+    for (let index = mixedPracticeQueue.length - 1; index > 0; index--) {
+      const randomIndex = Math.floor(Math.random() * (index + 1));
+
+      [mixedPracticeQueue[index], mixedPracticeQueue[randomIndex]] =
+        [mixedPracticeQueue[randomIndex], mixedPracticeQueue[index]];
+    }
+  }
+
+  return mixedPracticeQueue.pop();
+}
+
 function generateTransaction() {
   const businessIndex = Math.floor(Math.random() * businesses.length);
-
-  // Generate a different amount from the previous question.
   const previousAmount = transactionAmount;
 
   do {
     transactionAmount = (Math.floor(Math.random() * 36) + 5) * 50;
   } while (transactionAmount === previousAmount);
 
-  const availableTypes = transactionTypes.filter((transaction) => {
-    return (
-      topicSelector.value === "all" ||
-      transaction.topic === topicSelector.value
-    );
-  });
-
-const typeIndex = Math.floor(Math.random() * availableTypes.length);
-currentTransaction = availableTypes[typeIndex];
-
-transactionText.textContent = currentTransaction.buildQuestion(
-  businesses[businessIndex],
-  pounds.format(transactionAmount)
-);
+  currentTransaction = chooseTransactionType();
+  transactionText.textContent = currentTransaction.buildQuestion(
+    businesses[businessIndex],
+    pounds.format(transactionAmount)
+  );
   
   journalForm.reset();
   journalFeedback.hidden = true;
@@ -378,6 +391,7 @@ hintButton.addEventListener("click", () => {
 });
 
 topicSelector.addEventListener("change", () => {
+  mixedPracticeQueue = [];
   generateTransaction();
   updateTotals();
 });
