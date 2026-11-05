@@ -1,285 +1,212 @@
 "use strict";
 
-const accounts = [
-  {
-    name: "Sales",
-    category: "Income",
-    destination: "profit-loss",
-    description: "Income earned from selling goods or providing services.",
-    explanation:
-      "Sales contributes to the profit or loss for the period. It is reported as income in the statement of profit or loss.",
-    example:
-    "Sales income of £8,000 is reported in the statement of profit or loss for the period.",
-  },
-  {
-    name: "Rent expense",
-    category: "Expense",
-    destination: "profit-loss",
-    description: "The cost of using rented premises during the period.",
-    explanation:
-      "Rent expense reduces the profit for the period. It belongs in the statement of profit or loss.",
-    example:
-    "Rent expense of £1,200 is deducted when calculating profit or loss for the period.",
-  },
-  {
-    name: "Equipment",
-    category: "Non-current asset",
-    destination: "financial-position",
-    description: "Items the business uses over more than one accounting period.",
-    explanation:
-      "Equipment is a resource used by the business. Its carrying amount appears as a non-current asset in the statement of financial position.",
-    example:
-    "Equipment costing £3,000 with accumulated depreciation of £600 has a carrying amount of £2,400 in the statement of financial position.",
-  },
-  {
-    name: "Bank",
-    category: "Current asset",
-    destination: "financial-position",
-    description: "Money held in the business bank account.",
-    explanation:
-      "A positive bank balance is a current asset in the statement of financial position. A bank overdraft would usually be shown as a current liability.",
-    example:
-    "A positive bank balance of £950 at the reporting date is shown as a current asset.",
-  },
-  {
-    name: "Bank loan",
-    category: "Liability",
-    destination: "financial-position",
-    description: "Money the business owes to a lender.",
-    explanation:
-      "The outstanding loan appears in the statement of financial position. Amounts due within twelve months are normally current liabilities; longer-term amounts are normally non-current liabilities.",
-    example:
-    "A £5,000 loan with £1,000 due within twelve months and £4,000 due later is split between current and non-current liabilities, assuming the business has the right to defer the later repayment.",
-  },
-  {
-    name: "Owner’s capital",
-    category: "Capital",
-    destination: "financial-position",
-    description: "The owner’s interest in the sole trader’s business.",
-    explanation:
-      "Closing capital appears in the statement of financial position. It reflects the owner’s investment, profit or loss, and drawings.",
-    example:
-    "Opening capital of £5,000 plus profit of £2,000, less drawings of £500, gives closing capital of £6,500, assuming no additional investment.",
-  },
-  {
-    name: "Drawings",
-    category: "Deduction from capital",
-    destination: "financial-position",
-    description:
-        "Money or other assets taken from the business by its owner for personal use.",
-    explanation:
-        "Drawings reduce the owner’s capital. They are included when calculating closing capital, which appears in the statement of financial position. Drawings are not an expense in the statement of profit or loss.",
-    example:
-    "If the owner withdraws £500 for personal use, that £500 is deducted when calculating closing capital. It does not reduce the business’s profit.",
-}
+// Statement destinations describe the named account, not its matching journal entry.
+const accountRows = [
+  ["Sales", "income", "profit-loss", "Income", "Sales earned this period contribute to profit.", "£8,000 earned sales are income in the SPL."],
+  ["Rent expense", "expense", "profit-loss", "Expense", "Rent used this period reduces profit.", "£1,200 rent is an expense in the SPL."],
+  ["Wages expense", "expense", "profit-loss", "Expense", "Staff costs for this period reduce profit.", "£2,400 wages are an expense."],
+  ["Electricity expense", "expense", "profit-loss", "Expense", "Electricity used is an expense, including the unpaid portion.", "£300 paid plus £50 accrued gives £350 expense."],
+  ["Insurance expense", "expense", "profit-loss", "Expense", "Only insurance relating to this period is an expense.", "£1,200 paid less £200 prepaid gives £1,000 expense."],
+  ["Depreciation expense", "expense", "profit-loss", "Expense", "Depreciation allocates an asset’s depreciable amount over its useful life.", "A £600 annual charge reduces profit by £600."],
+  ["Allowance adjustment — increase (SPL)", "expense", "profit-loss", "Expense increase", "An increase in the receivables allowance is a debit expense adjustment.", "An allowance rising from £200 to £350 gives a £150 SPL debit."],
+  ["Allowance adjustment — decrease (SPL)", "expense", "profit-loss", "Expense reduction (credit)", "A decrease credits the SPL adjustment to reduce expense; it is not sales income.", "An allowance falling from £350 to £200 gives a £150 SPL credit."],
+  ["Irrecoverable debts expense", "expense", "profit-loss", "Expense", "A receivable written off creates an expense in this simplified treatment.", "Writing off £100 debits expense and credits trade receivables."],
+  ["Cost of sales", "expense", "profit-loss", "Expense", "The cost of inventory sold is deducted from revenue.", "Opening inventory £500 + purchases £2,000 − closing inventory £700 = £1,800."],
+  ["Closing inventory adjustment (SPL)", "expense", "profit-loss", "Cost of sales reduction (credit)", "Under periodic inventory accounting the closing inventory credit reduces cost of sales, not sales revenue.", "£700 closing inventory produces a £700 credit adjustment to cost of sales."],
+  ["Loan interest expense", "expense", "profit-loss", "Expense", "Interest is a borrowing cost; repayment of loan principal is not an expense.", "£80 interest is an expense; £500 principal repaid reduces the loan."],
+  ["Equipment", "asset", "financial-position", "Non-current asset", "Equipment is reported net of accumulated depreciation.", "£3,000 cost less £600 depreciation gives £2,400 carrying amount."],
+  ["Motor vehicles", "asset", "financial-position", "Non-current asset", "Vehicles used by the business are reported net of depreciation.", "£10,000 cost less £2,000 depreciation gives £8,000."],
+  ["Bank (positive balance)", "asset", "financial-position", "Current asset", "Money held in the bank is an asset. An overdraft is treated separately as a liability.", "A positive £950 balance is a current asset."],
+  ["Trade receivables", "asset", "financial-position", "Current asset", "Amounts owed by customers are shown net of any allowance.", "£4,000 receivables less £200 allowance gives £3,800."],
+  ["Accrued income", "asset", "financial-position", "Current asset", "Income earned but not yet received creates an asset receivable.", "£250 earned but not received is an accrued income asset."],
+  ["Prepaid expense", "asset", "financial-position", "Current asset", "Payments for future periods represent future benefits.", "£200 insurance for next period is a prepayment asset."],
+  ["Closing inventory (SFP)", "asset", "financial-position", "Current asset", "Inventory is reported at the lower of cost and net realisable value.", "£700 cost with £650 net realisable value is reported at £650."],
+  ["Accumulated depreciation", "asset", "financial-position", "Contra-asset (credit balance)", "This credit balance reduces the related asset; it is not a liability or the SPL expense account.", "£3,000 equipment less £600 accumulated depreciation gives £2,400."],
+  ["Allowance for doubtful receivables", "asset", "financial-position", "Contra-asset (credit balance)", "This allowance reduces trade receivables in the SFP. Only its movement is adjusted in the SPL.", "£4,000 gross receivables less £200 allowance gives £3,800."],
+  ["Bank loan", "liability", "financial-position", "Liability", "Classification depends on repayment terms and the right to defer settlement.", "£1,000 due within twelve months is current; £4,000 due later may be non-current."],
+  ["Trade payables", "liability", "financial-position", "Current liability", "Amounts owed to suppliers are obligations.", "£900 due to suppliers is a current liability."],
+  ["Accrued expense", "liability", "financial-position", "Current liability", "Costs incurred but unpaid create a liability. The expense itself appears separately in the SPL.", "£150 unpaid electricity creates an accrued expense liability."],
+  ["Prepaid income (deferred income)", "liability", "financial-position", "Current liability in this example", "Money received for next period’s services is an obligation, not yet earned income.", "£500 received for next month’s services is deferred income."],
+  ["Bank overdraft", "liability", "financial-position", "Current liability", "An overdrawn bank balance is owed to the bank.", "A £300 overdraft is normally a current liability."],
+  ["Drawings", "drawings", "financial-position", "Deduction from capital", "Personal withdrawals reduce closing capital, not business profit.", "£5,000 opening capital + £2,000 profit − £500 drawings = £6,500."],
+  ["Owner’s capital", "capital", "financial-position", "Capital", "Closing capital reflects investment, profit or loss, and drawings.", "£5,000 opening + £1,000 investment + £2,000 profit − £500 drawings = £7,500."],
+  ["Commission income", "income", "profit-loss", "Income", "Commission earned this period contributes to profit, whether received or accrued.", "£400 commission earned is income in the SPL."],
+  ["Rent income", "income", "profit-loss", "Income", "Earned rent contributes to profit; receipts for future periods are deferred.", "£800 received less £100 for next period gives £700 earned income."]
 ];
-
-const accountList = document.querySelector("#statement-account-list");
-const detailHeading = document.querySelector("#statement-detail-heading");
-const accountDescription = document.querySelector(
-  "#statement-account-description"
-);
-const accountCategory = document.querySelector(
-  "#statement-account-category"
-);
-const accountExplanation = document.querySelector(
-  "#statement-account-explanation"
-);
-const accountExample = document.querySelector(
-  "#statement-account-example"
-);
-
-const exampleButton = document.querySelector(
-  "#toggle-statement-example"
-);
-
-const examplePanel = document.querySelector(
-  "#statement-example-panel"
-);
-
-const destinations = document.querySelectorAll(".statement-destination");
+const accounts = accountRows.map(([name, group, destination, category, explanation, example]) => ({name, group, destination, category, explanation, example}));
+const groups = [
+  ["D", "Debit", "debit", "Debits normally increase expenses, assets and drawings. A debit does not always mean money received."],
+  ["E", "Expenses", "expense", "Expenses normally increase with a debit. Some adjustments credit an expense to reduce it."],
+  ["A", "Assets", "asset", "Assets normally increase with a debit. Contra-assets such as accumulated depreciation and allowances normally have credit balances and reduce assets."],
+  ["D", "Drawings", "drawings", "Drawings increase with a debit and reduce closing capital; they are not expenses."],
+  ["C", "Credit", "credit", "Credits normally increase liabilities, income and capital. A credit does not always mean money paid."],
+  ["L", "Liabilities", "liability", "Liabilities normally increase with a credit and decrease with a debit."],
+  ["I", "Income", "income", "Income normally increases with a credit and contributes to profit."],
+  ["C", "Capital", "capital", "The owner’s investment increases capital with a credit. Profit increases closing capital and drawings reduce it."]
+];
+const $ = (selector) => document.querySelector(selector);
+const detailHeading = $("#statement-detail-heading");
+const categorySelect = $("#statement-category-accounts");
+let groupAccounts = [];
 
 function selectAccount(index) {
-  const account = accounts[index];
-
-  detailHeading.textContent = account.name;
-  accountDescription.textContent = account.description;
-  accountCategory.textContent = `Category: ${account.category}`;
-
-  const destinationName = account.destination === "profit-loss"
-    ? "Statement of profit or loss"
-    : "Statement of financial position";
-
-  accountExplanation.textContent =
-    `${destinationName}. ${account.explanation}`;
-    accountExample.textContent = account.example;
-    examplePanel.hidden = true;
-    exampleButton.textContent = "Show example";
-    exampleButton.setAttribute("aria-expanded", "false");
-
-  accountList.querySelectorAll("button").forEach((button, buttonIndex) => {
-    const isSelected = buttonIndex === index;
-
-    button.classList.toggle("is-selected", isSelected);
-    button.setAttribute("aria-pressed", String(isSelected));
+  const account = groupAccounts[index];
+  $("#statement-account-category").textContent = `${account.name} · ${account.category}`;
+  $("#statement-account-explanation").textContent = account.explanation;
+  $("#statement-account-example").textContent = account.example;
+  $("#statement-example-panel").hidden = true;
+  $("#toggle-statement-example").textContent = "Show example";
+  $("#toggle-statement-example").setAttribute("aria-expanded", "false");
+  document.querySelectorAll(".statement-destination").forEach((panel) => {
+    const match = panel.id === `destination-${account.destination}`;
+    panel.classList.toggle("is-highlighted", match);
+    panel.querySelector(".statement-match").hidden = !match;
+    panel.querySelector(".statement-match").textContent = account.group === "drawings"
+      ? "Drawings reduce the closing capital shown here." : "This account contributes here.";
   });
-
-  destinations.forEach((destination) => {
-    const isMatch = destination.id === `destination-${account.destination}`;
-
-    destination.classList.toggle("is-highlighted", isMatch);
-    const matchLabel = destination.querySelector(".statement-match");
-    
-    matchLabel.hidden = !isMatch;
-    matchLabel.textContent = account.name === "Drawings"
-    ? "This account reduces the closing capital shown here."
-    : "This account belongs here.";
-    });
 }
-
-accounts.forEach((account, index) => {
+function selectGroup(index) {
+  const [letter, name, key, explanation] = groups[index];
+  detailHeading.textContent = `${letter} — ${name}`;
+  $("#statement-account-description").textContent = explanation;
+  groupAccounts = accounts.filter((account) => {
+    if (key === "debit") return ["expense", "asset", "drawings"].includes(account.group);
+    if (key === "credit") return ["liability", "income", "capital"].includes(account.group);
+    return account.group === key;
+  });
+  categorySelect.replaceChildren();
+  groupAccounts.forEach((account, i) => categorySelect.add(new Option(account.name, i)));
+  document.querySelectorAll(".deadclic-button").forEach((button, i) => {
+    button.classList.toggle("is-selected", index === i);
+    button.setAttribute("aria-pressed", String(index === i));
+  });
+  selectAccount(0);
+}
+groups.forEach(([letter, name], index) => {
   const button = document.createElement("button");
-
   button.type = "button";
-  button.className = "statement-account-button";
-  button.textContent = account.name;
-  button.setAttribute("aria-pressed", "false");
-
-  button.addEventListener("click", () => selectAccount(index));
-
-  accountList.append(button);
+  button.className = "statement-account-button deadclic-button";
+  const initial = document.createElement("strong");
+  initial.textContent = letter;
+  const label = document.createElement("span");
+  label.textContent = name;
+  button.append(initial, label);
+  button.addEventListener("click", () => selectGroup(index));
+  $("#statement-account-list").append(button);
 });
-
-exampleButton.addEventListener("click", () => {
-  const showExample = examplePanel.hidden;
-
-  examplePanel.hidden = !showExample;
-  exampleButton.textContent = showExample
-    ? "Hide example"
-    : "Show example";
-
-  exampleButton.setAttribute("aria-expanded", String(showExample));
+categorySelect.addEventListener("change", () => selectAccount(Number(categorySelect.value)));
+$("#toggle-statement-example").addEventListener("click", () => {
+  const show = $("#statement-example-panel").hidden;
+  $("#statement-example-panel").hidden = !show;
+  $("#toggle-statement-example").textContent = show ? "Hide example" : "Show example";
+  $("#toggle-statement-example").setAttribute("aria-expanded", String(show));
 });
+selectGroup(0);
 
-selectAccount(0);
-
-const exploreModeButton = document.querySelector(
-  "#statements-explore-mode"
-);
-const practiceModeButton = document.querySelector(
-  "#statements-practice-mode"
-);
-const exploreLayout = document.querySelector(".statements-layout");
-const practicePanel = document.querySelector("#statements-practice");
-const practiceHeading = document.querySelector("#practice-heading");
-const practiceAccountName = document.querySelector("#practice-account");
-const practiceFeedback = document.querySelector(
-  "#statements-practice-feedback"
-);
-const nextAccountButton = document.querySelector(
-  "#statements-next-account"
-);
-const answerButtons = document.querySelectorAll(
-  "[data-statement-answer]"
-);
-
+const answerButtons = document.querySelectorAll("[data-statement-answer]");
 let practiceAccount = null;
 let practiceAnswered = false;
+let active = false;
+let finished = false;
+let correct = 0;
+let answered = 0;
+let streak = 0;
+let bestStreak = 0;
+let gameMode = "10";
+let queue = [];
 
+function updateTracker() {
+  const percentage = answered ? Math.round(correct / answered * 100) : 0;
+  $("#practice-tracker").textContent = `${correct}/${answered} correct · ${percentage}% · Answered: ${answered} · Streak: ${streak} · Best streak: ${bestStreak}`;
+  $("#practice-goal").textContent = gameMode === "streak"
+    ? "Goal: 10 correct answers in a row. A mistake resets the streak, not your total score."
+    : gameMode === "unlimited" ? "Unlimited practice — continue at your own pace." : `Goal: ${gameMode} answered questions.`;
+}
 function nextPracticeAccount() {
-  // Avoid showing the same account twice in succession.
-  const availableAccounts = accounts.filter((account) => {
-    return account !== practiceAccount;
-  });
-
-  const randomIndex = Math.floor(
-    Math.random() * availableAccounts.length
-  );
-
-  practiceAccount = availableAccounts[randomIndex];
-  practiceAnswered = false;
-
-  practiceAccountName.textContent = practiceAccount.name;
-  practiceFeedback.hidden = true;
-  practiceFeedback.textContent = "";
-  nextAccountButton.hidden = true;
-
-  answerButtons.forEach((button) => {
-    button.disabled = false;
-  });
-}
-
-function setPracticeMode(isPractice) {
-  exploreLayout.hidden = isPractice;
-  practicePanel.hidden = !isPractice;
-
-  exploreModeButton.setAttribute(
-    "aria-pressed",
-    String(!isPractice)
-  );
-  practiceModeButton.setAttribute(
-    "aria-pressed",
-    String(isPractice)
-  );
-
-  exploreModeButton.className = isPractice
-    ? "btn btn-outline-primary"
-    : "btn btn-primary";
-
-  practiceModeButton.className = isPractice
-    ? "btn btn-primary"
-    : "btn btn-outline-primary";
-
-  if (isPractice) {
-    nextPracticeAccount();
-    practiceHeading.focus();
-  } else {
-    detailHeading.focus();
+  if (!active || finished) return;
+  if (!queue.length) {
+    queue = [...accounts];
+    for (let index = queue.length - 1; index > 0; index--) {
+      const other = Math.floor(Math.random() * (index + 1));
+      [queue[index], queue[other]] = [queue[other], queue[index]];
+    }
+    if (queue.length > 1 && queue[queue.length - 1] === practiceAccount) {
+      [queue[0], queue[queue.length - 1]] = [queue[queue.length - 1], queue[0]];
+    }
   }
+  practiceAccount = queue.pop();
+  practiceAnswered = false;
+  $("#practice-account").textContent = practiceAccount.name;
+  $("#statements-practice-feedback").hidden = true;
+  $("#statements-next-account").hidden = true;
+  answerButtons.forEach((button) => { button.disabled = false; });
 }
-
-answerButtons.forEach((button) => {
-  button.addEventListener("click", () => {
-    if (practiceAnswered) return;
-
-    const isCorrect =
-      button.dataset.statementAnswer === practiceAccount.destination;
-
-    const destinationName =
-      practiceAccount.destination === "profit-loss"
-        ? "statement of profit or loss"
-        : "statement of financial position";
-
-    practiceFeedback.textContent = isCorrect
-      ? `Correct! ${practiceAccount.explanation}`
-      : `This account contributes to the ${destinationName}. ` +
-        practiceAccount.explanation;
-
-    practiceFeedback.className = isCorrect
-      ? "alert alert-success mt-3"
-      : "alert alert-info mt-3";
-
-    practiceFeedback.hidden = false;
-    practiceAnswered = true;
-
-    answerButtons.forEach((answerButton) => {
-      answerButton.disabled = true;
-    });
-
-    nextAccountButton.hidden = false;
-    nextAccountButton.focus();
-  });
-});
-
-exploreModeButton.addEventListener("click", () => {
-  setPracticeMode(false);
-});
-
-practiceModeButton.addEventListener("click", () => {
-  setPracticeMode(true);
-});
-
-nextAccountButton.addEventListener("click", () => {
+function startPractice() {
+  gameMode = $("#practice-length").value;
+  correct = answered = streak = bestStreak = 0;
+  active = true;
+  finished = false;
+  queue = [];
+  $("#practice-length").disabled = true;
+  $("#practice-start").hidden = true;
+  $("#practice-play-area").hidden = false;
+  $("#practice-results").hidden = true;
+  $("#practice-finish").hidden = gameMode !== "unlimited";
+  updateTracker();
   nextPracticeAccount();
-  practiceHeading.focus();
+  $("#practice-heading").focus();
+}
+function finishPractice() {
+  finished = true;
+  active = false;
+  $("#statements-next-account").hidden = true;
+  $("#practice-length").disabled = false;
+  $("#practice-finish").hidden = true;
+  answerButtons.forEach((button) => { button.disabled = true; });
+  $("#practice-start").hidden = false;
+  $("#practice-start").textContent = "Start another practice";
+  $("#practice-results").hidden = false;
+  $("#practice-results-heading").textContent = gameMode === "streak" ? "You reached 10 correct in a row!" : "Practice complete";
+  $("#practice-results-message").textContent = `You answered ${correct} of ${answered} correctly (${answered ? Math.round(correct / answered * 100) : 0}%). ` +
+    (gameMode === "streak" ? "Your persistence paid off. " : "Well done for completing your practice. ") +
+    "Review the explanations, then try again when you’re ready.";
+  $("#practice-results-heading").focus();
+}
+answerButtons.forEach((button) => button.addEventListener("click", () => {
+  if (!active || finished || practiceAnswered) return;
+  practiceAnswered = true;
+  const isCorrect = button.dataset.statementAnswer === practiceAccount.destination;
+  answered += 1;
+  if (isCorrect) { correct += 1; streak += 1; } else { streak = 0; }
+  bestStreak = Math.max(bestStreak, streak);
+  updateTracker();
+  const destination = practiceAccount.destination === "profit-loss" ? "statement of profit or loss" : "statement of financial position";
+  const feedback = $("#statements-practice-feedback");
+  feedback.textContent = (isCorrect ? "Correct! " : `This account contributes to the ${destination}. `) + practiceAccount.explanation;
+  feedback.className = isCorrect ? "alert alert-success mt-3" : "alert alert-info mt-3";
+  feedback.hidden = false;
+  answerButtons.forEach((answer) => { answer.disabled = true; });
+  if ((gameMode === "streak" && streak === 10) || (["10", "20"].includes(gameMode) && answered === Number(gameMode))) {
+    finishPractice();
+  } else {
+    $("#statements-next-account").hidden = false;
+    $("#statements-next-account").focus();
+  }
+}));
+function setPracticeMode(practice) {
+  $(".statements-layout").hidden = practice;
+  $("#statements-practice").hidden = !practice;
+  [["#statements-explore-mode", !practice], ["#statements-practice-mode", practice]].forEach(([id, selected]) => {
+    $(id).setAttribute("aria-pressed", String(selected));
+    $(id).className = selected ? "btn btn-primary" : "btn btn-outline-primary";
+  });
+  (practice ? $("#practice-heading") : detailHeading).focus();
+}
+$("#statements-explore-mode").addEventListener("click", () => setPracticeMode(false));
+$("#statements-practice-mode").addEventListener("click", () => setPracticeMode(true));
+$("#practice-start").addEventListener("click", startPractice);
+$("#practice-finish").addEventListener("click", () => { if (active) finishPractice(); });
+$("#statements-next-account").addEventListener("click", () => {
+  nextPracticeAccount();
+  $("#practice-heading").focus();
 });

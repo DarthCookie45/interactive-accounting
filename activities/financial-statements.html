@@ -62,8 +62,8 @@
           class="statements-panel statements-accounts"
           aria-labelledby="accounts-heading"
         >
-          <h2 id="accounts-heading">Explore the accounts</h2>
-          <p>Select an account to explore where it appears and why.</p>
+          <h2 id="accounts-heading">Explore DEADCLIC</h2>
+          <p>Select a letter, then explore the related accounts. DEAD: debit increases. CLIC: credit increases.</p>
 
           <div id="statement-account-list"></div>
         </section>
@@ -86,6 +86,8 @@
             aria-live="polite"
             aria-atomic="true"
           >
+            <label class="form-label fw-bold" for="statement-category-accounts">Explore an account in this group</label>
+            <select id="statement-category-accounts" class="form-select mb-3"></select>
             <p id="statement-account-category" class="fw-bold"></p>
             <p id="statement-account-explanation" class="mb-0"></p>
             <button
@@ -150,6 +152,21 @@
           the statement showing closing capital.
         </p>
 
+        <div class="practice-settings">
+          <label class="form-label fw-bold" for="practice-length">Choose your practice</label>
+          <select id="practice-length" class="form-select">
+            <option value="10">10 questions</option>
+            <option value="20">20 questions</option>
+            <option value="streak">10 correct answers in a row</option>
+            <option value="unlimited">Unlimited</option>
+          </select>
+          <button id="practice-start" class="btn btn-primary" type="button">Start practice</button>
+        </div>
+
+        <div id="practice-play-area" hidden>
+        <p id="practice-goal" class="small mt-3"></p>
+        <p id="practice-tracker" class="practice-tracker" role="status" aria-live="polite" aria-atomic="true"></p>
+
         <p id="practice-account" class="fs-3 fw-bold"></p>
 
         <div class="d-flex flex-wrap gap-2">
@@ -185,6 +202,12 @@
         >
           Next account
         </button>
+        <button id="practice-finish" class="btn btn-outline-secondary mt-3" type="button" hidden>Finish practice</button>
+        </div>
+        <section id="practice-results" class="statement-example mt-3" aria-labelledby="practice-results-heading" hidden>
+          <h3 id="practice-results-heading" tabindex="-1"></h3>
+          <p id="practice-results-message" class="mb-0"></p>
+        </section>
       </section>
     </main>
 

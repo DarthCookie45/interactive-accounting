@@ -124,6 +124,49 @@ const transactionTypes = [
   }
 ];
   
+// Period-end adjustments: the question states what has already been recorded.
+const adjustments = [
+  ["accrued-expense", "Accrued expense", "rent", "Rent expense", "accrued-expense", "Accrued expense",
+    "has incurred unpaid rent of AMOUNT for this period which has not yet been recorded. Record the year-end accrual",
+    "Debit Rent expense to recognise the cost for this period; credit Accrued expense for the liability. No bank payment occurs.",
+    "An expense has been incurred, but the business still owes the payment."],
+  ["accrued-income", "Accrued income", "accrued-income", "Accrued income", "sales", "Sales",
+    "has earned service income of AMOUNT this period which has not been received or recorded. Record the accrued income",
+    "Debit Accrued income for the asset receivable; credit Sales for income earned this period.",
+    "Income has been earned even though the cash has not arrived."],
+  ["prepaid-expense", "Prepaid expense", "prepaid-expense", "Prepaid expense", "rent", "Rent expense",
+    "has already debited all rent paid to Rent expense. AMOUNT relates to next period. Record the year-end prepayment adjustment",
+    "Debit Prepaid expense for the future benefit; credit Rent expense to remove next period’s cost from this period.",
+    "Move the future-period portion out of expense into a current asset."],
+  ["prepaid-income", "Prepaid income (deferred income)", "sales", "Sales", "prepaid-income", "Prepaid income (deferred income)",
+    "has already credited all customer receipts to Sales. AMOUNT relates to services to be provided next period. Record the income received in advance adjustment",
+    "Debit Sales to remove income not yet earned; credit Prepaid income (deferred income) for the obligation to provide future services.",
+    "Income received in advance is a liability until the service is provided."],
+  ["depreciation", "Depreciation", "depreciation", "Depreciation expense", "accumulated-depreciation", "Accumulated depreciation",
+    "needs to record equipment depreciation of AMOUNT for this period. No depreciation for this period has yet been recorded",
+    "Debit Depreciation expense in profit or loss; credit Accumulated depreciation, which reduces the equipment’s carrying amount in the SFP.",
+    "Record the period’s expense and build up the deduction against equipment; do not credit Bank."],
+  ["allowance-increase", "Allowance for doubtful receivables — increase", "allowance-adjustment", "Allowance adjustment (SPL)", "allowance", "Allowance for doubtful receivables",
+    "needs to increase its existing allowance for doubtful receivables BY AMOUNT. Record only the increase, not the total closing allowance",
+    "Debit Allowance adjustment (SPL) for the extra expense; credit Allowance for doubtful receivables to increase the deduction from trade receivables.",
+    "An increase in the allowance increases expense and reduces net receivables."],
+  ["allowance-decrease", "Allowance for doubtful receivables — decrease", "allowance", "Allowance for doubtful receivables", "allowance-adjustment", "Allowance adjustment (SPL)",
+    "needs to decrease its existing allowance for doubtful receivables BY AMOUNT. The existing allowance is sufficient for this reduction. Record only the decrease",
+    "Debit Allowance for doubtful receivables to reduce it; credit Allowance adjustment (SPL) to reduce the period’s expense.",
+    "A decrease reverses part of the allowance and credits the adjustment in profit or loss."],
+  ["closing-inventory", "Closing inventory", "inventory", "Closing inventory (SFP)", "inventory-adjustment", "Closing inventory adjustment (SPL)",
+    "has closing inventory valued at AMOUNT at the lower of cost and net realisable value. Under periodic inventory accounting, opening inventory has already been transferred to cost of sales. Record the closing inventory adjustment",
+    "Debit Closing inventory (SFP) for the current asset; credit Closing inventory adjustment (SPL) to reduce cost of sales. This credit is not sales revenue.",
+    "Closing inventory is an asset, and its matching credit reduces cost of sales." ]
+];
+
+adjustments.forEach(([topic, topicName, debitAccount, debitName, creditAccount, creditName, question, explanation, hint]) => {
+  transactionTypes.push({
+    topic, topicName, debitAccount, debitName, creditAccount, creditName, explanation, hint,
+    buildQuestion: (business, amount) => `${business} ${question.replace("AMOUNT", amount).replace("BY", "by")}.`
+  });
+});
+
 let currentTransaction = transactionTypes[0];
 
 let mixedPracticeQueue = [];
@@ -334,6 +377,22 @@ const totalDebitsDisplay = document.querySelector("#total-debits");
 const totalCreditsDisplay = document.querySelector("#total-credits");
 const balanceStatus = document.querySelector("#balance-status");
 const topicSelector = document.querySelector("#transaction-topic");
+
+// Keep both account selectors and topic choices aligned with the teaching data.
+transactionTypes.forEach((transaction) => {
+  if (!Array.from(topicSelector.options).some((option) => option.value === transaction.topic)) {
+    topicSelector.add(new Option(transaction.topicName, transaction.topic));
+  }
+  [1, 2].forEach((row) => {
+    const select = document.querySelector(`#account-${row}`);
+    [[transaction.debitAccount, transaction.debitName], [transaction.creditAccount, transaction.creditName]]
+      .forEach(([value, name]) => {
+        if (!Array.from(select.options).some((option) => option.value === value)) {
+          select.add(new Option(name, value));
+        }
+      });
+  });
+});
 
 const moneyWithPennies = new Intl.NumberFormat("en-GB", {
   style: "currency",
