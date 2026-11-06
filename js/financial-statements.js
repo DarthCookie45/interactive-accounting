@@ -74,6 +74,7 @@ function selectGroup(index) {
     if (key === "credit") return ["liability", "income", "capital"].includes(account.group);
     return account.group === key;
   });
+  groupAccounts.sort((a, b) => a.name.localeCompare(b.name, "en-GB", { sensitivity: "base", numeric: true }));
   categorySelect.replaceChildren();
   groupAccounts.forEach((account, i) => categorySelect.add(new Option(account.name, i)));
   document.querySelectorAll(".deadclic-button").forEach((button, i) => {
@@ -117,7 +118,11 @@ let queue = [];
 
 function updateTracker() {
   const percentage = answered ? Math.round(correct / answered * 100) : 0;
-  $("#practice-tracker").textContent = `${correct}/${answered} correct · ${percentage}% · Answered: ${answered} · Streak: ${streak} · Best streak: ${bestStreak}`;
+  $("#stat-correct").textContent = correct;
+  $("#stat-percentage").textContent = `(${percentage}%)`;
+  $("#stat-answered").textContent = answered;
+  $("#stat-streak").textContent = streak;
+  $("#stat-best").textContent = bestStreak;
   $("#practice-goal").textContent = gameMode === "streak"
     ? "Goal: 10 correct answers in a row. A mistake resets the streak, not your total score."
     : gameMode === "unlimited" ? "Unlimited practice — continue at your own pace." : `Goal: ${gameMode} answered questions.`;
@@ -147,14 +152,15 @@ function startPractice() {
   active = true;
   finished = false;
   queue = [];
-  $("#practice-length").disabled = true;
+  $("#practice-length").disabled = false;
   $("#practice-start").hidden = true;
   $("#practice-play-area").hidden = false;
+  $("#practice-ready").hidden = true;
   $("#practice-results").hidden = true;
   $("#practice-finish").hidden = gameMode !== "unlimited";
   updateTracker();
   nextPracticeAccount();
-  $("#practice-heading").focus();
+  $("#practice-account").focus();
 }
 function finishPractice() {
   finished = true;
@@ -169,7 +175,7 @@ function finishPractice() {
   $("#practice-results-heading").textContent = gameMode === "streak" ? "You reached 10 correct in a row!" : "Practice complete";
   $("#practice-results-message").textContent = `You answered ${correct} of ${answered} correctly (${answered ? Math.round(correct / answered * 100) : 0}%). ` +
     (gameMode === "streak" ? "Your persistence paid off. " : "Well done for completing your practice. ") +
-    "Review the explanations, then try again when you’re ready.";
+    "Try another practice when you’re ready, or visit Explore to build your understanding.";
   $("#practice-results-heading").focus();
 }
 answerButtons.forEach((button) => button.addEventListener("click", () => {
@@ -205,8 +211,22 @@ function setPracticeMode(practice) {
 $("#statements-explore-mode").addEventListener("click", () => setPracticeMode(false));
 $("#statements-practice-mode").addEventListener("click", () => setPracticeMode(true));
 $("#practice-start").addEventListener("click", startPractice);
+$("#practice-length").addEventListener("change", () => {
+  if (active || finished) startPractice();
+});
 $("#practice-finish").addEventListener("click", () => { if (active) finishPractice(); });
 $("#statements-next-account").addEventListener("click", () => {
   nextPracticeAccount();
-  $("#practice-heading").focus();
+  $("#practice-account").focus();
+});
+
+document.addEventListener("keydown", (event) => {
+  if (!active || finished || practiceAnswered || $("#statements-practice").hidden ||
+      event.repeat || event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return;
+  if (["SELECT", "INPUT", "TEXTAREA"].includes(event.target.tagName) || event.target.isContentEditable) return;
+  const key = event.key.toLowerCase();
+  const index = key === "arrowleft" || key === "a" ? 0 : key === "arrowright" || key === "d" ? 1 : -1;
+  if (index < 0) return;
+  event.preventDefault();
+  answerButtons[index].click();
 });

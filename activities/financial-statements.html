@@ -29,15 +29,16 @@
     </header>
 
     <main class="container statements-page py-3">
-      <header class="mb-3">
+      <header class="statements-page-heading mb-3">
+        <div>
         <p class="hero-eyebrow">SEE WHERE THE ACCOUNTS BELONG</p>
         <h1>Financial Statements Map</h1>
         <p>
           Explore how accounts help tell the story of a sole trader’s business.
         </p>
-      </header>
+        </div>
 
-      <div class="d-flex flex-wrap gap-2 mb-3" aria-label="Learning mode">
+      <div class="d-flex flex-wrap gap-2" aria-label="Learning mode">
         <button
           id="statements-explore-mode"
           class="btn btn-primary"
@@ -56,6 +57,7 @@
           Practise
         </button>
       </div>
+      </header>
 
       <div class="statements-layout">
         <section
@@ -63,7 +65,10 @@
           aria-labelledby="accounts-heading"
         >
           <h2 id="accounts-heading">Explore DEADCLIC</h2>
-          <p>Select a letter, then explore the related accounts. DEAD: debit increases. CLIC: credit increases.</p>
+          <p>
+            Select a letter, then explore the related accounts. DEAD: debit
+            increases. CLIC: credit increases.
+          </p>
 
           <div id="statement-account-list"></div>
         </section>
@@ -77,7 +82,7 @@
           <h2 id="statement-detail-heading" tabindex="-1">Select an account</h2>
 
           <p id="statement-account-description">
-            Choose an account on the left to explore its destination.
+            Choose a letter above, then an account to explore its destination.
           </p>
 
           <div
@@ -86,8 +91,13 @@
             aria-live="polite"
             aria-atomic="true"
           >
-            <label class="form-label fw-bold" for="statement-category-accounts">Explore an account in this group</label>
-            <select id="statement-category-accounts" class="form-select mb-3"></select>
+            <label class="form-label fw-bold" for="statement-category-accounts"
+              >Explore an account in this group</label
+            >
+            <select
+              id="statement-category-accounts"
+              class="form-select mb-3"
+            ></select>
             <p id="statement-account-category" class="fw-bold"></p>
             <p id="statement-account-explanation" class="mb-0"></p>
             <button
@@ -110,39 +120,40 @@
             </div>
           </div>
 
-          <div id="destination-profit-loss" class="statement-destination">
-            <h3>Statement of profit or loss</h3>
-            <p>
-              Shows income and expenses over a period, helping calculate the
-              business’s profit or loss.
-            </p>
-            <p class="statement-match fw-bold mt-2" hidden>
-              This account belongs here.
-            </p>
-          </div>
+          <div class="statement-destinations">
+            <div id="destination-profit-loss" class="statement-destination">
+              <h3>Statement of profit or loss</h3>
+              <p>
+                Shows income and expenses over a period, helping calculate the
+                business’s profit or loss.
+              </p>
+              <p class="statement-match fw-bold mt-2" hidden>
+                This account belongs here.
+              </p>
+            </div>
 
-          <div
-            id="destination-financial-position"
-            class="statement-destination"
-          >
-            <h3>Statement of financial position</h3>
-            <p>
-              Shows assets, liabilities and the owner’s capital at a particular
-              date.
-            </p>
-            <p class="statement-match fw-bold mt-2" hidden>
-              This account belongs here.
-            </p>
+            <div
+              id="destination-financial-position"
+              class="statement-destination"
+            >
+              <h3>Statement of financial position</h3>
+              <p>
+                Shows assets, liabilities and the owner’s capital at a
+                particular date.
+              </p>
+              <p class="statement-match fw-bold mt-2" hidden>
+                This account belongs here.
+              </p>
+            </div>
           </div>
         </section>
       </div>
 
-      <section
+      <div
         id="statements-practice"
-        class="statements-panel statements-detail"
-        aria-labelledby="practice-heading"
         hidden
       >
+        <section class="statements-panel statements-detail mb-3" aria-labelledby="practice-heading">
         <h2 id="practice-heading" tabindex="-1">
           Where does this account belong?
         </h2>
@@ -153,62 +164,112 @@
         </p>
 
         <div class="practice-settings">
-          <label class="form-label fw-bold" for="practice-length">Choose your practice</label>
+          <label class="form-label fw-bold" for="practice-length"
+            >Choose your practice</label
+          >
           <select id="practice-length" class="form-select">
-            <option value="10">10 questions</option>
+            <option value="10" selected>10 questions</option>
             <option value="20">20 questions</option>
             <option value="streak">10 correct answers in a row</option>
             <option value="unlimited">Unlimited</option>
           </select>
-          <button id="practice-start" class="btn btn-primary" type="button">Start practice</button>
+          <button id="practice-start" class="btn btn-primary" type="button">
+            Start practice
+          </button>
         </div>
+        <p class="small mt-2 mb-0">Changing practice starts a fresh game and resets your statistics.</p>
 
+        </section>
+        <section class="statements-panel statements-detail" aria-label="Practice questions and results">
+        <div id="practice-ready" aria-labelledby="practice-guide-heading">
+          <h3 id="practice-guide-heading" class="h5">How to play</h3>
+          <p class="small mb-2">Choose a game above and select Start practice. Below is an example of your game panel — these are illustrations, not live controls.</p>
+          <dl class="practice-tracker practice-demo-stats">
+            <div><dt>Correct</dt><dd>1 <small>(50%)</small></dd></div>
+            <div><dt>Questions answered</dt><dd>2</dd></div>
+            <div><dt>Current streak</dt><dd>1</dd></div>
+            <div><dt>Best streak</dt><dd>1</dd></div>
+          </dl>
+          <div class="practice-demo-layout">
+            <div class="practice-demo-answer">Statement of profit or loss<small>← / A</small></div>
+            <div class="practice-demo-question"><small>Example account question</small><strong>Rent expense</strong></div>
+            <div class="practice-demo-answer">Statement of financial position<small>→ / D</small></div>
+          </div>
+          <p class="small my-2">Read the account in the centre. Click its statement, or use ← / A for profit or loss and → / D for financial position.</p>
+          <div class="practice-demo-feedback small">Example feedback: Correct! Rent expense reduces profit and belongs in the statement of profit or loss.</div>
+          <p class="small mt-2 mb-0">Your answer updates the statistics above and an explanation appears here. Read it, then press Enter or Space on Next question. At the end, your final score appears below. Unlimited continues until you select Finish practice; a mistake resets the streak in the 10-in-a-row game.</p>
+        </div>
         <div id="practice-play-area" hidden>
-        <p id="practice-goal" class="small mt-3"></p>
-        <p id="practice-tracker" class="practice-tracker" role="status" aria-live="polite" aria-atomic="true"></p>
-
-        <p id="practice-account" class="fs-3 fw-bold"></p>
-
-        <div class="d-flex flex-wrap gap-2">
-          <button
-            class="btn btn-outline-primary"
-            type="button"
-            data-statement-answer="profit-loss"
+          <p id="practice-goal" class="small mt-3"></p>
+          <dl
+            id="practice-tracker"
+            class="practice-tracker"
+            role="status"
+            aria-live="polite"
+            aria-atomic="true"
           >
-            Statement of profit or loss
+            <div><dt>Correct</dt><dd><span id="stat-correct">0</span> <small id="stat-percentage">(0%)</small></dd></div>
+            <div><dt>Questions answered</dt><dd id="stat-answered">0</dd></div>
+            <div><dt>Current streak</dt><dd id="stat-streak">0</dd></div>
+            <div><dt>Best streak</dt><dd id="stat-best">0</dd></div>
+          </dl>
+
+          <div class="practice-answer-layout">
+            <button
+              class="btn btn-outline-primary"
+              type="button"
+              data-statement-answer="profit-loss"
+            >
+              Statement of profit or loss <small>← / A</small>
+            </button>
+
+            <p id="practice-account" class="fs-3 fw-bold" tabindex="-1"></p>
+
+            <button
+              class="btn btn-outline-primary"
+              type="button"
+              data-statement-answer="financial-position"
+            >
+              Statement of financial position <small>→ / D</small>
+            </button>
+          </div>
+          <p class="small mt-2 mb-0">Answer with ← / → or A / D. After reading feedback, press Enter or Space for the next question.</p>
+
+          <div
+            id="statements-practice-feedback"
+            class="alert mt-3"
+            role="status"
+            hidden
+          ></div>
+
+          <button
+            id="statements-next-account"
+            class="btn btn-primary mt-3"
+            type="button"
+            hidden
+          >
+            Next question
           </button>
-
           <button
-            class="btn btn-outline-primary"
+            id="practice-finish"
+            class="btn btn-outline-secondary mt-3"
             type="button"
-            data-statement-answer="financial-position"
+            hidden
           >
-            Statement of financial position
+            Finish practice
           </button>
         </div>
-
-        <div
-          id="statements-practice-feedback"
-          class="alert mt-3"
-          role="status"
-          hidden
-        ></div>
-
-        <button
-          id="statements-next-account"
-          class="btn btn-primary mt-3"
-          type="button"
+        <section
+          id="practice-results"
+          class="statement-example mt-3"
+          aria-labelledby="practice-results-heading"
           hidden
         >
-          Next account
-        </button>
-        <button id="practice-finish" class="btn btn-outline-secondary mt-3" type="button" hidden>Finish practice</button>
-        </div>
-        <section id="practice-results" class="statement-example mt-3" aria-labelledby="practice-results-heading" hidden>
           <h3 id="practice-results-heading" tabindex="-1"></h3>
           <p id="practice-results-message" class="mb-0"></p>
         </section>
-      </section>
+        </section>
+      </div>
     </main>
 
     <script src="../js/financial-statements.js"></script>

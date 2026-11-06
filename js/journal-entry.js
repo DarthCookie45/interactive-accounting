@@ -399,6 +399,21 @@ const moneyWithPennies = new Intl.NumberFormat("en-GB", {
   currency: "GBP"
 });
 
+// Sort after adjustment accounts have been added, retaining prompts at the top.
+[topicSelector, document.querySelector("#account-1"), document.querySelector("#account-2")]
+  .forEach((select) => {
+    const selectedValue = select.value;
+    const options = Array.from(select.options);
+    const pinned = options.filter((option) => option.value === "" || option.value === "all");
+    const choices = options.filter((option) => !pinned.includes(option));
+    choices.sort((a, b) => a.text.localeCompare(b.text, "en-GB", {
+      sensitivity: "base",
+      numeric: true
+    }));
+    select.replaceChildren(...pinned, ...choices);
+    select.value = selectedValue;
+  });
+
 function updateTotals() {
   const rows = [readRow(1), readRow(2)];
 
