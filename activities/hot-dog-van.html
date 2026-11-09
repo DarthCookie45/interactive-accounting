@@ -85,12 +85,40 @@
           <p class="hero-eyebrow mb-1">DAY 1 · LOCAL MARKET</p>
           <h2 id="van-day-name" tabindex="-1" class="mb-0"></h2>
         </header>
-      <div class="hot-dog-layout">
+        <div class="van-journal-layout mb-3">
+        <section class="hot-dog-panel hot-dog-results" aria-labelledby="van-journal-title">
+          <h3 id="van-journal-title" tabindex="-1">Day 1 journal</h3>
+          <p id="van-journal-step" class="fw-bold"></p>
+          <p id="van-journal-question"></p>
+          <form id="van-journal-form">
+            <p class="small">Record the transaction in the journal, then see it posted to the ledger.</p>
+            <div class="van-journal-grid mb-3">
+              <strong>Account</strong><strong>Debit (£)</strong><strong>Credit (£)</strong>
+              <select id="van-debit" class="form-select" aria-label="Account to debit" required></select>
+              <input id="van-debit-amount" class="form-control" aria-label="Debit amount in pounds" type="number" min="0.01" step="0.01" required>
+              <span aria-hidden="true">—</span>
+              <select id="van-credit" class="form-select" aria-label="Account to credit" required></select>
+              <span aria-hidden="true">—</span>
+              <input id="van-credit-amount" class="form-control" aria-label="Credit amount in pounds" type="number" min="0.01" step="0.01" required>
+            </div>
+            <button class="btn btn-primary" type="submit">Check entry</button>
+          </form>
+          <p id="van-journal-feedback" class="mt-2 mb-2" role="status"></p>
+          <button id="van-journal-next" class="btn btn-outline-primary" type="button" hidden>Next transaction</button>
+        </section>
+        <aside class="hot-dog-panel hot-dog-results" aria-labelledby="van-ledger-title">
+          <h3 id="van-ledger-title">Live T-accounts</h3>
+          <p>Bank balance <strong id="van-bank">£0.00</strong></p>
+          <p id="van-ledger-empty" class="mb-0">Correct journal entries will appear here.</p>
+          <div id="van-ledger"></div>
+        </aside>
+        </div>
+      <div id="van-trading" class="hot-dog-layout" hidden>
         <section
           class="hot-dog-panel hot-dog-trading"
           aria-labelledby="trading-title"
         >
-          <h2 id="trading-title">Trading day</h2>
+          <h2 id="trading-title" tabindex="-1">Trading day</h2>
           <p>Today you’re trading at a local market.</p>
 
           <ul class="list-unstyled mb-3">

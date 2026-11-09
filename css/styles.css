@@ -1755,6 +1755,68 @@ body {
 
 
 /* Hot Dog Van */
+.van-journal-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+  gap: 20px;
+  align-items: start;
+}
+
+.van-journal-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) repeat(2, minmax(0, 1fr));
+  align-items: center;
+  gap: 8px;
+}
+
+.van-journal-layout #van-trading {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.van-ledger-card {
+  border: 2px solid #1f2937;
+  border-radius: 12px;
+  overflow: hidden;
+  margin-top: 12px;
+}
+
+.van-ledger-card h4 {
+  background: #1f2937;
+  color: white;
+  font-size: 1rem;
+  margin: 0;
+  padding: 8px;
+  text-align: center;
+}
+
+.van-ledger-balance {
+  background: #dff8f4;
+  font-weight: 700;
+  margin: 0;
+  padding: 6px 8px;
+}
+
+@media (max-width: 991px) {
+  .van-journal-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+.van-t-account {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  border-top: 2px solid #1f2937;
+}
+
+.van-t-account > div {
+  padding: 8px;
+  text-align: center;
+}
+
+.van-t-account > div + div {
+  border-left: 2px solid #1f2937;
+}
+
 .hot-dog-layout[hidden] {
   display: none;
 }
