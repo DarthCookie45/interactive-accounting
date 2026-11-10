@@ -120,6 +120,7 @@
         >
           <h2 id="trading-title" tabindex="-1">Trading day</h2>
           <p>Today you’re trading at a local market.</p>
+          <p>Expect <strong id="hot-dog-demand"></strong>, buying one hot dog each. Unsold hot dogs are discarded at the end of the day.</p>
 
           <ul class="list-unstyled mb-3">
             <li>
@@ -173,12 +174,16 @@
           aria-labelledby="results-title"
         >
           <h2 id="results-title">Day’s results</h2>
-          <p>Your results will appear here after trading.</p>
+          <p id="hot-dog-outcome" role="status">Your results will appear here after trading.</p>
 
           <dl class="hot-dog-summary mb-0">
             <div>
               <dt>Hot dogs sold</dt>
               <dd id="hot-dog-sold">—</dd>
+            </div>
+            <div>
+              <dt>Hot dogs unsold</dt>
+              <dd id="hot-dog-unsold">—</dd>
             </div>
             <div>
               <dt>Sales revenue</dt>

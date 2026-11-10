@@ -170,7 +170,46 @@ nextEntry.addEventListener("click", () => {
   const trading = document.querySelector("#van-trading");
   journalForm.closest("section").replaceWith(trading);
   trading.hidden = false;
+  openTrading.disabled = false;
   document.querySelector("#trading-title").focus({ preventScroll: true });
 });
 
 showEntry();
+
+const demand = 40;
+const pitchFee = 2000;
+const tradingForm = document.querySelector("#hot-dog-form");
+const openTrading = tradingForm.querySelector('button[type="submit"]');
+const quantity = document.querySelector("#hot-dog-quantity");
+const price = document.querySelector("#hot-dog-price");
+const outcome = document.querySelector("#hot-dog-outcome");
+document.querySelector("#hot-dog-demand").textContent = `${demand} customers`;
+
+tradingForm.addEventListener("submit", (event) => {
+  event.preventDefault();
+  if (openTrading.disabled || !tradingForm.reportValidity()) return;
+
+  const prepared = quantity.valueAsNumber;
+  const sold = Math.min(prepared, demand);
+  const revenue = sold * Math.round(price.valueAsNumber * 100);
+  const ingredients = prepared * 100;
+  const costs = ingredients + pitchFee;
+  if (!Number.isSafeInteger(revenue) || !Number.isSafeInteger(costs)) {
+    outcome.textContent = "Enter a smaller quantity or price.";
+    return;
+  }
+  const profit = revenue - costs;
+
+  document.querySelector("#hot-dog-sold").textContent = sold;
+  document.querySelector("#hot-dog-unsold").textContent = prepared - sold;
+  for (const [field, pennies] of Object.entries({
+    revenue, ingredients, "pitch-fee": pitchFee, costs, profit
+  })) {
+    document.querySelector(`#hot-dog-${field}`).textContent = currency.format(pennies / 100);
+  }
+  const result = profit > 0 ? "You made a profit." : profit < 0 ? "You made a loss." : "You broke even.";
+  outcome.textContent = `Day 1 complete. You sold ${sold} of ${prepared} hot dogs. ${result}`;
+  quantity.disabled = true;
+  price.disabled = true;
+  openTrading.disabled = true;
+});
