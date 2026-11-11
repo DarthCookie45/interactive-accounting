@@ -21,6 +21,12 @@
           <a class="navbar-brand fw-bold" href="../index.html">
             Interactive Accounting
           </a>
+          <dl id="van-nav-stats" class="van-stat-strip" hidden>
+            <div><dt>Score</dt><dd id="van-stat-score">0</dd></div>
+            <div><dt>Streak</dt><dd id="van-stat-streak">0</dd></div>
+            <div><dt>Hot dogs sold</dt><dd id="van-stat-sold">0</dd></div>
+            <div><dt>Bank</dt><dd id="van-stat-bank">£0.00</dd></div>
+          </dl>
           <a class="btn btn-outline-primary" href="../index.html#activities">
             Back to activities
           </a>
@@ -30,17 +36,27 @@
 
     <main class="container hot-dog-page py-3">
       <header class="mb-3">
-        <p class="hero-eyebrow mb-2">RUN YOUR OWN TRADING DAY</p>
+        <p class="hero-eyebrow mb-2">RUN YOUR OWN TRADING WEEK</p>
         <h1>Hot Dog Van</h1>
         <p class="mb-0">
-          Decide how many hot dogs to prepare and what to charge. Can you cover
-          your costs and make a profit?
+          Build your van’s business from the first investment to the week-end accounts.
         </p>
       </header>
 
-      <section id="van-setup" class="hot-dog-layout" aria-labelledby="van-setup-title">
+      <section id="van-guide" class="hot-dog-panel hot-dog-results mb-3" aria-labelledby="van-guide-title">
+        <h2 id="van-guide-title">Run your van for a week</h2>
+        <p>Create your van, then work through seven days. Customer numbers and prices vary between runs. Choose the debit and credit accounts, enter both amounts to two decimal places, and check your entry. Correct entries post to the live T-accounts.</p>
+        <p>At each day’s results, complete the trial balance by dragging tiles or selecting a tile and its blank. Use the T-accounts and statements for reference. Earn 100 points for completing it, or 50 if you use its hint.</p>
+        <p><strong>Easy:</strong> Sales and ingredient totals are supplied. Earn 100 points per correct entry plus 10 per streak step on a first-try answer. A hint halves the award and preserves your streak.</p>
+        <p><strong>Hard:</strong> Calculate sales and ingredient totals from quantities and unit prices. Earn 200 points per correct entry, or 100 with a hint. Each incorrect submission costs 100 points. Scores can go below zero. Streaks are tracked for achievements.</p>
+        <p>Incorrect entries reset your streak in either mode. You can retry until the entry is correct.</p>
+        <p><strong>Achievements:</strong> Post your first entry, finish a day without mistakes, reach a five-answer streak, sell 250 hot dogs, end the week in profit, or complete the week. Your final results show which you earned.</p>
+        <p>All amounts are in pounds. Ignore VAT and depreciation in this introductory scenario.</p>
+        <button id="van-guide-next" class="btn btn-primary" type="button">Create your van</button>
+      </section>
+      <section id="van-setup" class="hot-dog-layout" aria-labelledby="van-setup-title" hidden>
         <div class="hot-dog-panel hot-dog-trading text-center">
-          <h2 id="van-setup-title">Create your van</h2>
+          <h2 id="van-setup-title" tabindex="-1">Create your van</h2>
           <p>Roll for a business name and pick two colours.</p>
           <p id="van-name" class="fs-4 fw-bold" role="status"></p>
           <button id="van-roll" class="btn btn-outline-primary mb-3" type="button">Roll another name</button>
@@ -53,6 +69,13 @@
               <label class="form-label" for="van-accent">Accent colour</label>
               <input class="form-control form-control-color mx-auto" id="van-accent" type="color" value="#f9bd47">
             </div>
+          </div>
+          <div class="mb-3">
+            <label class="form-label fw-bold" for="van-difficulty">Difficulty</label>
+            <select class="form-select w-auto mx-auto" id="van-difficulty">
+              <option value="easy">Easy · totals supplied</option>
+              <option value="hard">Hard · calculate the totals</option>
+            </select>
           </div>
           <button id="van-start" class="btn btn-primary" type="button">Start Day 1</button>
         </div>
@@ -81,133 +104,76 @@
       </section>
 
       <section id="van-day" aria-labelledby="van-day-name" hidden>
-        <header class="van-day-banner mb-3">
-          <p class="hero-eyebrow mb-1">DAY 1 · LOCAL MARKET</p>
-          <h2 id="van-day-name" tabindex="-1" class="mb-0"></h2>
-        </header>
         <div class="van-journal-layout mb-3">
-        <section class="hot-dog-panel hot-dog-results" aria-labelledby="van-journal-title">
-          <h3 id="van-journal-title" tabindex="-1">Day 1 journal</h3>
-          <p id="van-journal-step" class="fw-bold"></p>
-          <p id="van-journal-question"></p>
-          <form id="van-journal-form">
-            <p class="small">Record the transaction in the journal, then see it posted to the ledger.</p>
-            <div class="van-journal-grid mb-3">
-              <strong>Account</strong><strong>Debit (£)</strong><strong>Credit (£)</strong>
-              <select id="van-debit" class="form-select" aria-label="Account to debit" required></select>
-              <input id="van-debit-amount" class="form-control" aria-label="Debit amount in pounds" type="number" min="0.01" step="0.01" required>
-              <span aria-hidden="true">—</span>
-              <select id="van-credit" class="form-select" aria-label="Account to credit" required></select>
-              <span aria-hidden="true">—</span>
-              <input id="van-credit-amount" class="form-control" aria-label="Credit amount in pounds" type="number" min="0.01" step="0.01" required>
-            </div>
-            <button class="btn btn-primary" type="submit">Check entry</button>
-          </form>
-          <p id="van-journal-feedback" class="mt-2 mb-2" role="status"></p>
-          <button id="van-journal-next" class="btn btn-outline-primary" type="button" hidden>Next transaction</button>
-        </section>
-        <aside class="hot-dog-panel hot-dog-results" aria-labelledby="van-ledger-title">
-          <h3 id="van-ledger-title">Live T-accounts</h3>
-          <p>Bank balance <strong id="van-bank">£0.00</strong></p>
-          <p id="van-ledger-empty" class="mb-0">Correct journal entries will appear here.</p>
-          <div id="van-ledger"></div>
-        </aside>
+          <div>
+            <section id="van-journal-panel" class="hot-dog-panel hot-dog-results" aria-labelledby="van-journal-title">
+              <h2 id="van-journal-title" tabindex="-1">Trading journal</h2>
+              <p id="van-journal-step" class="fw-bold"></p>
+              <p id="van-journal-question"></p>
+              <form id="van-journal-form">
+                <div class="van-journal-grid mb-3">
+                  <strong>Account</strong><strong>Debit (£)</strong><strong>Credit (£)</strong>
+                  <select id="van-debit" class="form-select" aria-label="Account to debit" required></select>
+                  <input id="van-debit-amount" class="form-control" aria-label="Debit amount in pounds" type="text" inputmode="decimal" placeholder="0.00" aria-describedby="van-money-format" required>
+                  <span aria-hidden="true">—</span>
+                  <select id="van-credit" class="form-select" aria-label="Account to credit" required></select>
+                  <span aria-hidden="true">—</span>
+                  <input id="van-credit-amount" class="form-control" aria-label="Credit amount in pounds" type="text" inputmode="decimal" placeholder="0.00" aria-describedby="van-money-format" required>
+                </div>
+                <p id="van-money-format" class="small">Use exactly two decimal places, including .00 for whole pounds.</p>
+                <div class="d-flex flex-wrap gap-2">
+                  <button class="btn btn-primary" type="submit">Check entry</button>
+                  <button id="van-hint" class="btn van-hint-button" type="button" aria-controls="van-hint-text" aria-expanded="false">Hint · half points</button>
+                </div>
+                <p id="van-hint-text" class="alert van-hint-box mt-3 mb-0" hidden></p>
+              </form>
+              <p id="van-journal-feedback" class="alert mt-3 mb-2" role="status" hidden></p>
+              <button id="van-journal-next" class="btn btn-outline-primary" type="button" hidden>Next transaction</button>
+            </section>
+            <section id="van-day-summary" class="hot-dog-panel hot-dog-results" aria-labelledby="van-summary-title" hidden>
+              <h2 id="van-summary-title" tabindex="-1"></h2>
+              <p id="van-summary-message"></p>
+              <dl id="van-summary-stats" class="van-summary-tiles"></dl>
+              <h3 class="h5">Achievements earned</h3>
+              <ul id="van-achievements" class="van-achievements"></ul>
+              <div class="d-flex flex-wrap gap-2">
+                <button id="van-next-day" class="btn btn-primary" type="button"></button>
+                <button class="btn btn-outline-primary" type="button" data-van-report="ledger">T-accounts</button>
+                <button class="btn btn-outline-primary" type="button" data-van-report="trial">Trial balance</button>
+                <button class="btn btn-outline-primary" type="button" data-van-report="statements">Financial statements</button>
+              </div>
+            </section>
+          </div>
+          <div>
+            <header class="van-day-banner mb-3">
+              <p id="van-day-label" class="hero-eyebrow mb-1"></p>
+              <h2 id="van-day-name" tabindex="-1" class="h5 mb-2"></h2>
+              <h3 class="h6">Today’s stats</h3>
+              <dl class="van-today-tiles">
+                <div><dt>Customers</dt><dd id="van-today-customers">0</dd></div>
+                <div><dt>Hot dogs sold</dt><dd id="van-today-sold">0</dd></div>
+                <div><dt>Sales</dt><dd id="van-today-sales">£0.00</dd></div>
+              </dl>
+            </header>
+            <aside class="hot-dog-panel hot-dog-results" aria-labelledby="van-ledger-title">
+              <h3 id="van-ledger-title">Live T-accounts</h3>
+              <button class="btn btn-outline-primary btn-sm mb-2" type="button" data-van-report="ledger">View all T-accounts</button>
+              <p id="van-ledger-empty" class="mb-0">Correct journal entries will appear here.</p>
+              <div id="van-ledger" class="van-ledger-preview"></div>
+            </aside>
+          </div>
         </div>
-      <div id="van-trading" class="hot-dog-layout" hidden>
-        <section
-          class="hot-dog-panel hot-dog-trading"
-          aria-labelledby="trading-title"
-        >
-          <h2 id="trading-title" tabindex="-1">Trading day</h2>
-          <p>Today you’re trading at a local market.</p>
-          <p>Expect <strong id="hot-dog-demand"></strong>, buying one hot dog each. Unsold hot dogs are discarded at the end of the day.</p>
+      </section>
 
-          <ul class="list-unstyled mb-3">
-            <li>
-              Ingredient cost: <strong>£1.00 per hot dog prepared</strong>
-            </li>
-            <li>Pitch fee: <strong>£20.00 for the day</strong></li>
-          </ul>
-
-          <form id="hot-dog-form">
-            <div class="mb-3">
-              <label class="form-label" for="hot-dog-quantity">
-                Hot dogs to prepare
-              </label>
-              <input
-                class="form-control"
-                id="hot-dog-quantity"
-                name="quantity"
-                type="number"
-                min="1"
-                step="1"
-                value="40"
-                required
-              />
-            </div>
-
-            <div class="mb-3">
-              <label class="form-label" for="hot-dog-price">
-                Selling price per hot dog (£)
-              </label>
-              <input
-                class="form-control"
-                id="hot-dog-price"
-                name="price"
-                type="number"
-                min="0.01"
-                step="0.01"
-                inputmode="decimal"
-                value="3.00"
-                required
-              />
-            </div>
-
-            <button class="btn btn-primary" type="submit" disabled>
-              Open for trading
-            </button>
-          </form>
-        </section>
-
-        <section
-          class="hot-dog-panel hot-dog-results"
-          aria-labelledby="results-title"
-        >
-          <h2 id="results-title">Day’s results</h2>
-          <p id="hot-dog-outcome" role="status">Your results will appear here after trading.</p>
-
-          <dl class="hot-dog-summary mb-0">
-            <div>
-              <dt>Hot dogs sold</dt>
-              <dd id="hot-dog-sold">—</dd>
-            </div>
-            <div>
-              <dt>Hot dogs unsold</dt>
-              <dd id="hot-dog-unsold">—</dd>
-            </div>
-            <div>
-              <dt>Sales revenue</dt>
-              <dd id="hot-dog-revenue">—</dd>
-            </div>
-            <div>
-              <dt>Ingredient cost</dt>
-              <dd id="hot-dog-ingredients">—</dd>
-            </div>
-            <div>
-              <dt>Pitch fee</dt>
-              <dd id="hot-dog-pitch-fee">—</dd>
-            </div>
-            <div>
-              <dt>Total costs</dt>
-              <dd id="hot-dog-costs">—</dd>
-            </div>
-            <div>
-              <dt>Profit or loss</dt>
-              <dd id="hot-dog-profit">—</dd>
-            </div>
-          </dl>
-        </section>
-      </div>
+      <section id="van-report" class="hot-dog-panel hot-dog-results" aria-labelledby="van-report-title" hidden>
+        <button id="van-report-back" class="btn btn-outline-primary mb-3" type="button">Back to the van</button>
+        <h2 id="van-report-title" tabindex="-1"></h2>
+        <div id="van-report-tools" class="d-flex flex-wrap gap-2 mb-3" hidden>
+          <button class="btn btn-outline-primary" type="button" data-van-report="trial">Trial balance exercise</button>
+          <button class="btn btn-outline-primary" type="button" data-van-report="ledger">T-accounts</button>
+          <button class="btn btn-outline-primary" type="button" data-van-report="statements">Financial statements</button>
+        </div>
+        <div id="van-report-content"></div>
       </section>
     </main>
   </body>
