@@ -2,6 +2,10 @@
   box-sizing: border-box;
 }
 
+:root {
+  --panel-shadow: 6px 6px 0 #1f2937;
+}
+
 html,
 body {
   max-width: 100%;
@@ -126,7 +130,7 @@ body {
 .activity-card {
     border: 2px solid #1f2937;
     border-radius: 20px;
-    box-shadow: 6px 6px 0 #1f2937;
+    box-shadow: var(--panel-shadow);
     height: 100%;
     padding: 24px;
 }
@@ -2188,4 +2192,28 @@ body {
   .hot-dog-layout {
     grid-template-columns: 1fr;
   }
+}
+
+/* Shared panel treatment across the activities. Quick Think keeps its orange shadow. */
+.activity-card,
+.game-panel,
+.result-screen,
+.blitz-panel,
+.cycle-info-panel,
+.journal-transaction,
+.journal-builder,
+.statements-panel,
+.hot-dog-panel,
+.van-day-banner {
+  box-shadow: var(--panel-shadow);
+}
+
+/* Nested panels stay flat so the outer panel provides the shared shadow. */
+:is(.game-panel, .result-screen, .blitz-panel, .cycle-info-panel,
+    .journal-transaction, .journal-builder, .statements-panel, .hot-dog-panel)
+  :is(.game-panel, .result-screen, .blitz-panel, .cycle-info-panel,
+      .journal-transaction, .journal-builder, .statements-panel, .hot-dog-panel,
+      .blitz-question-panel, .blitz-result-summary, .statement-destination,
+      .van-day-banner, .blitz-review-layout > section) {
+  box-shadow: none;
 }
