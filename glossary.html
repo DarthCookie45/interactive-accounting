@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en-GB">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Accounting Glossary | Interactive Accounting</title>
+    <link rel="icon" type="image/svg+xml" href="assets/images/favicon.svg" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="css/styles.css" />
+    <script src="js/glossary.js" defer></script>
+  </head>
+  <body class="site-page">
+    <header>
+      <nav class="navbar navbar-expand-md navbar-light bg-light" aria-label="Main navigation">
+        <div class="container">
+          <a class="navbar-brand fw-bold" href="index.html">Interactive Accounting</a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavigation" aria-controls="mainNavigation" aria-expanded="false" aria-label="Open navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="mainNavigation">
+            <ul class="navbar-nav ms-auto">
+              <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+              <li class="nav-item"><a class="nav-link" href="index.html#activities">Activities</a></li>
+              <li class="nav-item"><a class="nav-link" href="index.html#about">About</a></li>
+              <li class="nav-item"><a class="nav-link active" href="glossary.html" aria-current="page">Glossary</a></li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+    </header>
+    <main id="glossary" class="glossary-page">
+      <div class="container">
+        <header class="mb-4">
+          <p class="hero-eyebrow">THE WORDS BEHIND THE NUMBERS</p>
+          <h1>Accounting Glossary</h1>
+          <p class="mb-0">Get to know the terminology with plain-English definitions and practical UK examples.</p>
+        </header>
+        <section class="glossary-search-panel" aria-labelledby="glossary-search-title">
+          <h2 id="glossary-search-title" class="h5 fw-bold">Find a term</h2>
+          <label for="glossary-search" class="form-label">Search terms, acronyms, definitions or examples</label>
+          <div class="glossary-search-controls">
+            <input type="search" class="form-control" id="glossary-search" placeholder="Try debit, SPL or money owed…" aria-controls="glossary-results" autocomplete="off" />
+            <button type="button" class="btn btn-outline-primary" id="glossary-clear" disabled>Clear search</button>
+          </div>
+          <p id="glossary-count" class="small mt-3 mb-0" role="status" aria-live="polite" aria-atomic="true"></p>
+        </section>
+        <div id="glossary-results" class="glossary-grid"></div>
+        <div id="glossary-empty" class="glossary-empty" hidden>
+          <h2 class="h5">No matching terms yet</h2>
+          <p class="mb-0">Try a shorter phrase or an acronym, or select Clear search to see all terms.</p>
+        </div>
+        <noscript><p class="alert alert-warning mt-4">Enable JavaScript to view and search the glossary.</p></noscript>
+      </div>
+    </main>
+    <footer class="site-footer">
+      <div class="container site-footer-content">
+        <div>
+          <p class="fw-bold mb-1">Interactive Accounting</p>
+          <p class="small mb-0">UK accounting practice for learning and revision. Examples are simplified for teaching.</p>
+        </div>
+        <nav aria-label="Footer navigation">
+          <a href="#glossary">Back to top</a>
+          <a href="index.html#activities">Activities</a>
+          <a href="index.html#about">About</a>
+          <a href="glossary.html" aria-current="page">Glossary</a>
+        </nav>
+      </div>
+    </footer>
+    <button id="glossary-back-top" class="back-top-button" type="button" aria-label="Back to top" title="Back to top" hidden>
+      <span aria-hidden="true">↑</span>
+    </button>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>
