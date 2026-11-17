@@ -1932,7 +1932,85 @@ body {
 
 
 /* Hot Dog Van */
+#van-achievement-dialog {
+  max-width: min(600px, calc(100vw - 32px));
+  max-height: 85dvh;
+  overflow: auto;
+  padding: 24px;
+  border: 2px solid #1f2937;
+  border-radius: 20px;
+  background: #f4edff;
+  color: #1f2937;
+}
+#van-achievement-dialog::backdrop { background: #1f293799; }
+#van-achievement-guide { list-style: none; padding: 0; display: grid; gap: 12px; }
+.van-achievement-card { display: grid; grid-template-columns: 64px minmax(0, 1fr); gap: 14px; padding: 14px; border: 1px solid #bdb3d7; border-radius: 12px; background: #fff; }
+.van-achievement-card.is-unlocked { border-color: #5b3cc4; background: #f0ebff; }
+.van-achievement-card p { margin: 4px 0 8px; }
+.van-achievement-picture { position: relative; align-self: start; display: grid; place-items: center; background: #e6dfff; border-radius: 12px; min-height: 64px; }
+.van-achievement-icon { font-size: 2rem; }
+.is-locked .van-achievement-icon { filter: grayscale(1); opacity: 0.45; }
+.van-achievement-lock { position: absolute; bottom: -4px; right: -4px; font-size: 1rem; }
+.van-achievement-tracker { font-size: 0.8rem; color: #524663; }
+.van-achievement-card progress { display: block; width: 100%; height: 10px; accent-color: #5b3cc4; }
+.van-achievements li { border: 1px solid #5b3cc4; }
+#van-report-content table tbody tr:last-child td,
+.van-financial-total { font-weight: 700; }
+#van-report-content .van-trial-blank[data-filled="true"],
+#van-report-content .van-financial-slot[data-filled="true"] {
+  background: var(--van-primary, #5b3cc4);
+  border: 1px solid var(--van-primary, #5b3cc4);
+  color: var(--van-primary-ink, white);
+  opacity: 1;
+}
+#van-report-content .van-trial-blank[data-filled="true"]:hover,
+#van-report-content .van-financial-slot[data-filled="true"]:hover {
+  background: var(--van-accent, #f9bd47);
+  border-color: var(--van-accent, #f9bd47);
+  color: var(--van-accent-ink, #111111);
+}
+.van-achievement-button { border: 0; background: transparent; color: inherit; padding: 0; font: inherit; text-decoration: underline; cursor: pointer; }
 #van-report-tools[hidden] { display: none !important; }
+.van-report-paper {
+  background: white;
+  color: #1f2937;
+  border: 1px solid #d5d9e0;
+  border-radius: 14px;
+  padding: clamp(12px, 2vw, 24px);
+}
+.van-financial-layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); gap: 24px; align-items: start; }
+.van-financial-reference { min-width: 0; overflow-x: auto; }
+.van-financial-slot { display: block; width: 100%; margin: 6px 0; padding: 10px; border-style: dashed; text-align: left; }
+.van-financial-slot:disabled { color: #1f2937; opacity: 1; }
+.van-financial-total { display: flex; justify-content: space-between; gap: 12px; border-bottom: 1px solid #d5d9e0; padding: 8px 0; margin: 0; }
+.van-financial-reference .btn:disabled { opacity: 1; background: #eee8ff; color: #635185; border-color: #ccc; }
+#van-final-art svg { width: 100%; height: auto; }
+#van-live-sidebar[hidden], #van-final-art[hidden] { display: none !important; }
+@media (max-width: 991px) {
+  .van-financial-layout { grid-template-columns: minmax(0, 1fr); }
+}
+#van-report-tools [aria-current="page"] {
+  outline: 2px solid #1f2937;
+  outline-offset: 3px;
+  font-weight: 700;
+}
+#van-report-tools,
+.van-summary-reports { padding: 5px; justify-content: center; align-items: center; }
+#van-report-tools .btn,
+.van-summary-reports .btn { padding: 12px 18px; font-size: 1rem; }
+#van-report-tools .van-report-featured,
+.van-summary-reports .van-report-featured { padding: 17px 24px; font-size: 1.1rem; font-weight: 700; }
+#van-next-day { display: block; width: 100%; padding: 16px; font-size: 1.2rem; font-weight: 700; background: #5b3cc4; border-color: #5b3cc4; }
+#van-next-day:disabled { background: #e1d7ff; border-color: #e1d7ff; color: #635185; opacity: 1; }
+#van-next-day[hidden] { display: none; }
+.hot-dog-page #van-day .hot-dog-panel,
+.hot-dog-page #van-report {
+  background: color-mix(in srgb, var(--van-primary, #5b3cc4) 9%, white);
+  border-top: 5px solid var(--van-primary, #5b3cc4);
+  border-left: 5px solid var(--van-accent, #f9bd47);
+}
+.hot-dog-page .van-today-tiles > div,
+.hot-dog-page .van-summary-tiles > div { background: color-mix(in srgb, var(--van-accent, #f9bd47) 22%, white); }
 
 .van-profit { color: #146c43 !important; }
 .van-loss { color: #a12622 !important; }
@@ -1952,6 +2030,11 @@ body {
 .van-ledger-total { margin-top: auto; border-top: 1px solid #1f2937; border-bottom: 3px double #1f2937; font-weight: 700; }
 .van-ledger-spacer { min-height: 1.7rem; }
 .van-trial-blank { min-width: 5.5rem; border-style: dashed; }
+.van-trial-pool { min-height: 64px; padding: 12px; border: 1px dashed #8b80a7; border-radius: 10px; }
+.van-journal-grid[hidden], .van-sales-challenge[hidden] { display: none !important; }
+.van-sales-challenge { background: white; border: 1px solid #d5d9e0; border-radius: 12px; padding: 16px; }
+.van-trial-blank[aria-pressed="true"] { background: #5b3cc4; color: white; border-style: solid; }
+.van-trial-blank:disabled { color: #1f2937; opacity: 1; }
 #van-report-content button[aria-pressed="true"] { background: #5b3cc4; color: white; }
 
 .van-stat-strip {
@@ -1977,6 +2060,15 @@ body {
 }
 
 .van-today-tiles { margin: 0; }
+.van-summary-tiles { grid-template-columns: repeat(12, minmax(0, 1fr)); }
+.van-summary-tiles > div { grid-column: span 3; min-width: 0; }
+.van-summary-tiles > div:nth-child(n + 5) { grid-column: span 4; }
+@media (max-width: 575px) {
+  .van-summary-tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .van-summary-tiles > div,
+  .van-summary-tiles > div:nth-child(n + 5) { grid-column: span 1; }
+  .van-summary-tiles > div:last-child { grid-column: 1 / -1; }
+}
 .van-today-tiles > div,
 .van-summary-tiles > div {
   background: #eee8ff;
@@ -2061,6 +2153,7 @@ body {
 }
 
 .van-ledger-card {
+  background: white;
   border: 2px solid #1f2937;
   border-radius: 12px;
   overflow: hidden;
@@ -2090,6 +2183,7 @@ body {
 }
 
 .van-t-account {
+  background: white;
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   border-top: 2px solid #1f2937;

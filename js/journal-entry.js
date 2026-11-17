@@ -40,7 +40,7 @@ const transactionTypes = [
     creditAccount: "bank",
     creditName: "Bank",
     hint:
-      "Think about the asset the business gained and the asset it used to pay. Increases in assets are debits; decreases are credits.",
+      "Will the item benefit the business beyond this period? Identify what was received and how it was paid for, then apply the normal-balance rules to each account category.",
     explanation:
       "Equipment increases, so it is debited. Money in the bank decreases, so Bank is credited."
   },
@@ -53,7 +53,7 @@ const transactionTypes = [
     creditAccount: "bank",
     creditName: "Bank",
     hint:
-      "Think about the expense incurred and the money leaving the bank. Expenses increase with a debit; assets decrease with a credit.",
+      "Decide which period benefits from the payment. Is it a running cost, a lasting asset or a payment for a future period? Then consider how the payment changes the business.",
     explanation:
       "Rent expense increases, so it is debited. Money in the bank decreases, so Bank is credited."
   },
@@ -66,7 +66,7 @@ const transactionTypes = [
     creditAccount: "sales",
     creditName: "Sales",
     hint:
-      "Think about the money received and the income earned. Assets increase with a debit; income increases with a credit.",
+      "Separate the receipt of money from the reason it was received. Has the business earned it, borrowed it, or received an investment? Use those categories to decide the accounts and sides.",
     explanation:
       "Money in the bank increases, so Bank is debited. Sales income increases, so Sales is credited."
   },
@@ -81,7 +81,7 @@ const transactionTypes = [
     explanation:
       "Money in the bank increases, so Bank is debited. The owner’s investment increases capital, so Owner’s capital is credited. This is not sales income.",
     hint:
-      "The business receives money, but it has not earned it from a customer. Think about the owner’s investment and the increase in the bank balance."
+      "Look at who provided the money and whether the business supplied anything in return. How does this differ from a customer payment or borrowing?"
   },
   {
     topic: "drawings",
@@ -94,7 +94,7 @@ const transactionTypes = [
     explanation:
       "The owner’s personal withdrawal increases Drawings, so Drawings is debited. Money in the business bank account decreases, so Bank is credited. Drawings are not a business expense.",
     hint:
-      "The money is being used personally by the owner, rather than to run the business. Think about the account for personal withdrawals and the money leaving Bank."
+      "Ask who benefits from this payment: the business or its owner personally. How should that distinction affect the category you choose?"
   },
   {
     topic: "loan",
@@ -107,7 +107,7 @@ const transactionTypes = [
     explanation:
       "Money in the bank increases, so Bank is debited. The amount owed to the lender increases, so Bank loan is credited. Borrowing money does not create sales income.",
     hint:
-      "The business receives money that it must repay. Think about the increase in its bank balance and the increase in its liability. Liabilities increase with a credit."
+      "Does this receipt belong to the business permanently, or must it be repaid? Consider both what arrived and the obligation that came with it."
   },
   {
     topic: "loan-repayment",
@@ -120,7 +120,7 @@ const transactionTypes = [
     explanation:
       "The amount owed to the lender decreases, so Bank loan is debited. Money in the bank decreases, so Bank is credited. Repaying loan principal is not a business expense.",
     hint:
-      "Both the bank balance and the amount owed decrease. Assets decrease with a credit; liabilities decrease with a debit."
+      "Distinguish repayment of an amount borrowed from interest charged for borrowing. Which existing balances does a principal-only repayment change?"
   }
 ];
   
@@ -129,35 +129,35 @@ const adjustments = [
   ["accrued-expense", "Accrued expense", "rent", "Rent expense", "accrued-expense", "Accrued expense",
     "has incurred unpaid rent of AMOUNT for this period which has not yet been recorded. Record the year-end accrual",
     "Debit Rent expense to recognise the cost for this period; credit Accrued expense for the liability. No bank payment occurs.",
-    "An expense has been incurred, but the business still owes the payment."],
+    "Compare when the service was used with when it will be paid for. Which period should bear the cost, and what remains outstanding at its end?"],
   ["accrued-income", "Accrued income", "accrued-income", "Accrued income", "sales", "Sales",
     "has earned service income of AMOUNT this period which has not been received or recorded. Record the accrued income",
     "Debit Accrued income for the asset receivable; credit Sales for income earned this period.",
-    "Income has been earned even though the cash has not arrived."],
+    "Separate earning income from receiving payment. What has the business done by the reporting date, and what right does it have as a result?"],
   ["prepaid-expense", "Prepaid expense", "prepaid-expense", "Prepaid expense", "rent", "Rent expense",
     "has already debited all rent paid to Rent expense. AMOUNT relates to next period. Record the year-end prepayment adjustment",
     "Debit Prepaid expense for the future benefit; credit Rent expense to remove next period’s cost from this period.",
-    "Move the future-period portion out of expense into a current asset."],
+    "Check what was originally recorded and which period receives the benefit. Does the full amount belong in this period’s costs?"],
   ["prepaid-income", "Prepaid income (deferred income)", "sales", "Sales", "prepaid-income", "Prepaid income (deferred income)",
     "has already credited all customer receipts to Sales. AMOUNT relates to services to be provided next period. Record the income received in advance adjustment",
     "Debit Sales to remove income not yet earned; credit Prepaid income (deferred income) for the obligation to provide future services.",
-    "Income received in advance is a liability until the service is provided."],
+    "Compare the original entry with the work completed by the reporting date. Has the business done everything it owes the customer yet?"],
   ["depreciation", "Depreciation", "depreciation", "Depreciation expense", "accumulated-depreciation", "Accumulated depreciation",
     "needs to record equipment depreciation of AMOUNT for this period. No depreciation for this period has yet been recorded",
     "Debit Depreciation expense in profit or loss; credit Accumulated depreciation, which reduces the equipment’s carrying amount in the SFP.",
-    "Record the period’s expense and build up the deduction against equipment; do not credit Bank."],
+    "Think about allocating the cost of a long-lasting item over its useful life. Does recognising that allocation involve a new cash payment?"],
   ["allowance-increase", "Allowance for doubtful receivables — increase", "allowance-adjustment", "Allowance adjustment (SPL)", "allowance", "Allowance for doubtful receivables",
     "needs to increase its existing allowance for doubtful receivables BY AMOUNT. Record only the increase, not the total closing allowance",
     "Debit Allowance adjustment (SPL) for the extra expense; credit Allowance for doubtful receivables to increase the deduction from trade receivables.",
-    "An increase in the allowance increases expense and reduces net receivables."],
+    "Compare the old estimate with the revised estimate. Focus on the change required, rather than recording the full closing estimate again."],
   ["allowance-decrease", "Allowance for doubtful receivables — decrease", "allowance", "Allowance for doubtful receivables", "allowance-adjustment", "Allowance adjustment (SPL)",
     "needs to decrease its existing allowance for doubtful receivables BY AMOUNT. The existing allowance is sufficient for this reduction. Record only the decrease",
     "Debit Allowance for doubtful receivables to reduce it; credit Allowance adjustment (SPL) to reduce the period’s expense.",
-    "A decrease reverses part of the allowance and credits the adjustment in profit or loss."],
+    "The estimate is being reduced. Think about which part of the earlier adjustment now needs to be reversed, and record only that change."],
   ["closing-inventory", "Closing inventory", "inventory", "Closing inventory (SFP)", "inventory-adjustment", "Closing inventory adjustment (SPL)",
     "has closing inventory valued at AMOUNT at the lower of cost and net realisable value. Under periodic inventory accounting, opening inventory has already been transferred to cost of sales. Record the closing inventory adjustment",
     "Debit Closing inventory (SFP) for the current asset; credit Closing inventory adjustment (SPL) to reduce cost of sales. This credit is not sales revenue.",
-    "Closing inventory is an asset, and its matching credit reduces cost of sales." ]
+    "Which goods have not yet been used to earn this period’s sales? Think about matching costs to the period and showing the remaining resources at the reporting date." ]
 ];
 
 adjustments.forEach(([topic, topicName, debitAccount, debitName, creditAccount, creditName, question, explanation, hint]) => {
