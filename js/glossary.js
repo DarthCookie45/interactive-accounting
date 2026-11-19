@@ -132,6 +132,14 @@ const glossaryTerms = [
   ["Value added tax", ["VAT"], "A tax charged on many supplies of goods and services. Where applicable, VAT accounting distinguishes tax on sales from recoverable tax on purchases. The introductory activities here ignore VAT.", "An invoice may show the price before VAT, VAT separately and the total to pay."],
   ["Working capital", ["net current assets"], "Current assets less current liabilities, indicating the net resources tied up in short-term operations.", "Current assets of £3,000 less current liabilities of £1,200 give working capital of £1,800."]
 ].map(([term, aliases, definition, example]) => ({ term, aliases, definition, example })))
+  .concat([
+    { term: "Bank", aliases: ["business bank account"], definition: "The ledger account recording money held in the business bank account. A positive balance is normally an asset; an overdraft is a liability.", example: "A customer pays £100 into Bank: debit Bank £100 and credit the relevant customer or income account." },
+    { term: "Equipment", aliases: ["cooking equipment"], definition: "Long-lasting items used to operate the business, rather than stock bought to resell. Equipment is normally a non-current asset.", example: "A £500 food warmer is debited to Equipment when bought; it is not an ingredient purchase." },
+    { term: "Motor vehicles", aliases: ["van", "vehicle"], definition: "Vehicles held for use in running the business. Their cost and accumulated depreciation are recorded separately.", example: "A van costing £6,000 is debited to Motor vehicles. Depreciation charges are recorded separately over its use." },
+    { term: "Rent", aliases: ["rent expense", "pitch rent"], definition: "The cost of using premises or a trading space for the period. Unpaid or advance-paid amounts may require accrual or prepayment adjustments.", example: "A trader pays £250 for this week’s market pitch: debit Rent and credit Bank." },
+    { term: "Wages", aliases: ["wages expense", "staff costs"], definition: "The cost of staff work in the period, often calculated from hours worked multiplied by an hourly rate.", example: "Ten hours at £13.00 per hour gives wages of £130.00." },
+    { term: "Sundry income", aliases: ["other income"], definition: "A separate account for other income that does not belong in the business’s main sales account.", example: "Other income of £200 earned but not yet received is recorded by debiting Accrued income and crediting Sundry income." }
+  ])
   .sort((a, b) => a.term.localeCompare(b.term, "en-GB"));
 
 const glossarySearch = document.getElementById("glossary-search");
@@ -139,6 +147,35 @@ const glossaryClear = document.getElementById("glossary-clear");
 const glossaryResults = document.getElementById("glossary-results");
 const glossaryCount = document.getElementById("glossary-count");
 const glossaryEmpty = document.getElementById("glossary-empty");
+const glossaryAccountSides = {
+  "Asset": "debit", "Current asset": "debit", "Non-current asset": "debit", "Capital": "credit", "Equity": "credit",
+  "Drawings": "debit", "Expense": "debit", "Revenue": "credit", "Liability": "credit", "Current liability": "credit", "Non-current liability": "credit",
+  "Bank loan": "credit", "Bank overdraft": "credit", "Accrued expense": "credit", "Accrued income": "debit",
+  "Prepaid expense": "debit", "Deferred income": "credit", "Inventory": "debit", "Closing inventory": "debit", "Opening inventory": "debit",
+  "Purchases": "debit", "Trade receivables": "debit", "Trade payables": "credit", "Depreciation": "debit", "Accumulated depreciation": "credit",
+  "Allowance for doubtful receivables": "credit", "Interest": "debit", "Bad debt": "debit", "Sales returns": "debit", "Purchase returns": "credit",
+  "Bank": "debit", "Equipment": "debit", "Motor vehicles": "debit", "Rent": "debit", "Wages": "debit", "Sundry income": "credit"
+};
+
+function showGlossaryAccount(entry) {
+  const dialog = document.getElementById("glossary-account-dialog");
+  const heading = document.getElementById("glossary-account-title");
+  heading.textContent = entry.term + " — T-account";
+  const content = document.getElementById("glossary-account-content");
+  content.replaceChildren();
+  const layout = document.createElement("div"); layout.className = "glossary-t-account";
+  for (const side of ["debit", "credit"]) {
+    const column = document.createElement("div");
+    const title = document.createElement("h3"); title.className = "h5"; title.textContent = side === "debit" ? "Debit (Dr)" : "Credit (Cr)";
+    const effect = document.createElement("p"); effect.className = glossaryAccountSides[entry.term] === side ? "glossary-increase" : "";
+    effect.textContent = glossaryAccountSides[entry.term] === side ? "↑ Increases on this side" : "↓ Decreases on this side";
+    column.append(title, effect); layout.append(column);
+  }
+  const note = document.createElement("p"); note.className = "mt-3 mb-0";
+  note.textContent = "This shows the normal increase and decrease rules; each complete transaction must still have equal total debits and credits.";
+  if (entry.term === "Closing inventory") note.textContent += " This diagram shows closing inventory as an SFP asset. The matching closing inventory adjustment in the SPL is a credit that reduces cost of sales.";
+  content.append(layout, note); dialog.showModal(); heading.focus();
+}
 
 function normaliseGlossaryText(text) {
   return text.toLocaleLowerCase("en-GB")
@@ -170,6 +207,16 @@ function renderGlossary() {
     label.textContent = "Example: ";
     example.append(label, document.createTextNode(entry.example));
     card.append(title, definition, example);
+    if (glossaryAccountSides[entry.term]) {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "btn btn-outline-primary btn-sm mt-3";
+      button.textContent = "T-account example";
+      button.setAttribute("aria-label", "T-account example for " + entry.term);
+      button.setAttribute("aria-haspopup", "dialog");
+      button.addEventListener("click", () => showGlossaryAccount(entry));
+      card.append(button);
+    }
     glossaryResults.append(card);
   }
   glossaryEmpty.hidden = matches.length !== 0;
@@ -186,6 +233,7 @@ glossaryClear.addEventListener("click", () => {
   glossarySearch.focus();
 });
 renderGlossary();
+document.getElementById("glossary-account-close").addEventListener("click", () => document.getElementById("glossary-account-dialog").close());
 
 const glossaryBackTop = document.getElementById("glossary-back-top");
 function updateBackTop() {

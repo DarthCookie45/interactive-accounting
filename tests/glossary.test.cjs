@@ -15,6 +15,8 @@ function element() {
       this.handlers[type] = (...args) => { previous?.(...args); handler(...args); };
     },
     setAttribute() {},
+    showModal() { this.open = true; },
+    close() { this.open = false; },
     focus() { this.focused = true; }
   };
 }
@@ -69,6 +71,14 @@ assert(nodes.heading.focused);
 window.reducedMotion = true;
 nodes['glossary-back-top'].handlers.click();
 assert.equal(window.lastScroll.behavior, 'instant');
+run('showGlossaryAccount(glossaryTerms.find(entry => entry.term === "Trade payables"))');
+assert(nodes['glossary-account-dialog'].open);
+assert(nodes['glossary-account-title'].textContent.includes('Trade payables'));
+const sides = nodes['glossary-account-content'].children[0].children;
+assert(sides[1].children[1].textContent.includes('Increases'));
+assert(sides[0].children[1].textContent.includes('Decreases'));
+nodes['glossary-account-close'].handlers.click();
+assert.equal(nodes['glossary-account-dialog'].open, false);
 for (const file of ['index.html', 'glossary.html']) {
   const html = fs.readFileSync(path.join(root, file), 'utf8');
   assert(html.includes('<body class="site-page">'));

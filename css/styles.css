@@ -70,6 +70,12 @@ body {
 .glossary-card p { line-height: 1.6; }
 .glossary-example { background: #fff0e5; border-left: 3px solid #f3a56f; border-radius: 8px; padding: 12px; margin-bottom: 0; }
 .glossary-empty { background: white; }
+#glossary-account-dialog { width: min(600px, calc(100vw - 32px)); max-height: 85dvh; overflow: auto; padding: 24px; border: 2px solid #1f2937; border-radius: 20px; background: white; }
+#glossary-account-dialog::backdrop { background: #1f293799; }
+.glossary-t-account { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); border-top: 3px solid #1f2937; margin-top: 20px; }
+.glossary-t-account > div { padding: 16px 12px; }
+.glossary-t-account > div + div { border-left: 2px solid #1f2937; }
+.glossary-increase { background: #dff8f4; border-radius: 8px; padding: 8px; font-weight: 700; color: #14523c; }
 .back-top-button {
   position: fixed;
   right: max(20px, calc((100vw - 1320px) / 4 - 32px), env(safe-area-inset-right));
@@ -311,6 +317,7 @@ body {
 }
 
 .activity-card .activity-link > span:first-child { flex-shrink: 0; }
+.activity-card .activity-link { border: 2px solid #1f2937; border-radius: 10px; padding: 8px 10px; }
 
 .activity-card .activity-link:focus-visible {
   outline: 3px solid #5b3cc4;
@@ -581,7 +588,8 @@ body {
   margin-top: 18px;
 }
 .blitz-question-panel .blitz-account { margin-top: 0; }
-.blitz-question-panel .question-amount { color: #452b9e; font-size: 1.3rem; margin-bottom: 8px; }
+.blitz-question-panel .question-amount { color: #452b9e; font-size: clamp(1.5rem, 3vw, 2.2rem); margin-bottom: 8px; }
+.journal-actions #new-transaction { margin-left: auto; order: 1; }
 .blitz-page .answer-button { background: #5b3cc4; color: white; }
 .blitz-page .answer-button:hover { background: #452b9e; }
 .blitz-page .answer-button small { display: block; font-size: 0.8rem; margin-top: 4px; }
@@ -2027,12 +2035,18 @@ body {
   color: #1f2937;
 }
 #van-achievement-dialog::backdrop { background: #1f293799; }
+#van-achievement-dialog { overflow: hidden; }
+#van-achievement-heading { padding-right: 48px; }
+#van-achievement-guide { max-height: calc(85dvh - 130px); overflow-y: auto; padding-right: 6px !important; }
+#van-close-achievements { position: absolute; top: 12px; right: 12px; width: 44px; height: 44px; padding: 0; border-radius: 50%; background: #5b3cc4; border: 2px solid #1f2937; color: white; font-size: 2rem; line-height: 1; }
+#van-close-achievements:hover { background: #ffcaa7; color: #1f2937; }
 #van-achievement-guide { list-style: none; padding: 0; display: grid; gap: 12px; }
 .van-achievement-card { display: grid; grid-template-columns: 64px minmax(0, 1fr); gap: 14px; padding: 14px; border: 1px solid #bdb3d7; border-radius: 12px; background: #fff; }
 .van-achievement-card.is-unlocked { border-color: #5b3cc4; background: #f0ebff; }
 .van-achievement-card p { margin: 4px 0 8px; }
 .van-achievement-picture { position: relative; align-self: start; display: grid; place-items: center; background: #e6dfff; border-radius: 12px; min-height: 64px; }
-.van-achievement-icon { font-size: 2rem; }
+.van-achievement-icon { display: block; width: 36px; height: 36px; object-fit: contain; }
+.is-unlocked .van-achievement-icon { filter: invert(25%) sepia(67%) saturate(1949%) hue-rotate(239deg) brightness(88%) contrast(91%); }
 .is-locked .van-achievement-icon { filter: grayscale(1); opacity: 0.45; }
 .van-achievement-lock { position: absolute; bottom: -4px; right: -4px; font-size: 1rem; }
 .van-achievement-tracker { font-size: 0.8rem; color: #524663; }
@@ -2043,18 +2057,33 @@ body {
 #van-report-content .van-trial-blank[data-filled="true"],
 #van-report-content .van-financial-slot[data-filled="true"] {
   background: var(--van-primary, #5b3cc4);
-  border: 1px solid var(--van-primary, #5b3cc4);
+  border: 2px solid #1f2937;
   color: var(--van-primary-ink, white);
   opacity: 1;
 }
 #van-report-content .van-trial-blank[data-filled="true"]:hover,
 #van-report-content .van-financial-slot[data-filled="true"]:hover {
   background: var(--van-accent, #f9bd47);
-  border-color: var(--van-accent, #f9bd47);
+  border-color: #1f2937;
   color: var(--van-accent-ink, #111111);
 }
 .van-achievement-button { border: 0; background: transparent; color: inherit; padding: 0; font: inherit; text-decoration: underline; cursor: pointer; }
 #van-report-tools[hidden] { display: none !important; }
+#van-report-dock {
+  position: sticky;
+  top: 8px;
+  z-index: 20;
+  background: #ffffff;
+  border: 2px solid #1f2937;
+  border-radius: 12px;
+  padding: 8px;
+  margin-bottom: 16px;
+}
+#van-report-tools { margin-bottom: 0 !important; }
+#van-trial-tray-host .van-trial-pool { max-height: 22dvh; overflow-y: auto; background: white; }
+#van-trial-tray-host[hidden] { display: none; }
+#van-report-content button,
+#van-report-content input { scroll-margin-top: 45vh; }
 .van-report-paper {
   background: white;
   color: #1f2937;
@@ -2086,15 +2115,17 @@ body {
 .van-summary-reports .van-report-featured { padding: 17px 24px; font-size: 1.1rem; font-weight: 700; }
 #van-next-day { display: block; width: 100%; padding: 16px; font-size: 1.2rem; font-weight: 700; background: #5b3cc4; border-color: #5b3cc4; }
 #van-next-day:disabled { background: #e1d7ff; border-color: #e1d7ff; color: #635185; opacity: 1; }
+#van-next-day:not(:disabled):hover { background: #e1d7ff; border-color: #5b3cc4; color: #35235f; }
 #van-next-day[hidden] { display: none; }
 .hot-dog-page #van-day .hot-dog-panel,
 .hot-dog-page #van-report {
   background: color-mix(in srgb, var(--van-primary, #5b3cc4) 9%, white);
-  border-top: 5px solid var(--van-primary, #5b3cc4);
-  border-left: 5px solid var(--van-accent, #f9bd47);
+  border: 2px solid #1f2937;
+  box-shadow: var(--panel-shadow), inset 0 5px 0 var(--van-primary, #5b3cc4), inset 5px 0 0 var(--van-accent, #f9bd47);
 }
+.hot-dog-page .van-day-banner { border: 2px solid #1f2937; box-shadow: var(--panel-shadow), inset 0 4px 0 var(--van-primary, #5b3cc4), inset 4px 0 0 var(--van-accent, #f9bd47); }
 .hot-dog-page .van-today-tiles > div,
-.hot-dog-page .van-summary-tiles > div { background: color-mix(in srgb, var(--van-accent, #f9bd47) 22%, white); }
+.hot-dog-page .van-summary-tiles > div { background: color-mix(in srgb, var(--van-accent, #f9bd47) 22%, white); border: 1px solid #7a8493; color: #1f2937; }
 
 .van-profit { color: #146c43 !important; }
 .van-loss { color: #a12622 !important; }
@@ -2120,6 +2151,15 @@ body {
 .van-trial-blank[aria-pressed="true"] { background: #5b3cc4; color: white; border-style: solid; }
 .van-trial-blank:disabled { color: #1f2937; opacity: 1; }
 #van-report-content button[aria-pressed="true"] { background: #5b3cc4; color: white; }
+#van-report-content .van-trial-blank[data-filled="true"][aria-pressed="true"],
+#van-report-content .van-financial-slot[data-filled="true"]:hover,
+#van-trial-tray-host button[aria-pressed="true"],
+#van-report-content .van-trial-blank[data-filled="true"]:hover {
+  background: var(--van-selection, #5b3cc4);
+  color: var(--van-selection-ink, white);
+  outline: 3px solid #1f2937;
+  outline-offset: 2px;
+}
 
 .van-stat-strip {
   display: flex;

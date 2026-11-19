@@ -11,7 +11,8 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="../css/styles.css" />
-    <script src="../js/hot-dog-van.js?v=20261115" defer></script>
+    <script src="../js/van-accounting.js?v=20261117" defer></script>
+    <script src="../js/hot-dog-van.js?v=20261117" defer></script>
   </head>
 
   <body>
@@ -48,11 +49,10 @@
 
     <main class="container hot-dog-page py-3">
       <header class="mb-3">
-        <p class="hero-eyebrow mb-2">RUN YOUR OWN TRADING WEEK</p>
+        <p class="hero-eyebrow mb-2">RUN YOUR OWN TRADING MONTH</p>
         <h1>Hot Dog Van</h1>
         <p class="mb-0">
-          Build your van’s business from the first investment to the week-end
-          accounts.
+          Build your van’s business from its first investment through four weeks of accounts.
         </p>
       </header>
 
@@ -61,17 +61,20 @@
         class="hot-dog-panel hot-dog-results mb-3"
         aria-labelledby="van-guide-title"
       >
-        <h2 id="van-guide-title">Run your van for a week</h2>
-        <p>Create your van and run it for seven days. Record transactions, solve sales challenges and watch your live T-accounts update.</p>
+        <h2 id="van-guide-title">Run your van for four weeks</h2>
+        <button id="van-guide-achievements" type="button" class="btn btn-outline-primary mb-2">View achievements</button>
+        <p>Create your van, record cash and credit transactions, and watch your live T-accounts update over a four-week month.</p>
         <ul>
           <li><strong>Monday–Saturday:</strong> complete each day’s entries, then start the next day.</li>
-          <li><strong>Sunday:</strong> complete the trial balance, then build the profit or loss statement and financial position statement.</li>
-          <li><strong>Money:</strong> use two decimal places, including .00. Ignore VAT and depreciation.</li>
+          <li><strong>Sunday:</strong> complete the trial balance, SPL and SFP, then view your company’s weekly results and start the next week.</li>
+          <li><strong>Next week:</strong> assets, liabilities and capital carry forward; income and costs start afresh. Closing inventory becomes opening inventory.</li>
+          <li><strong>Adjustments:</strong> any depreciation introduced in week one repeats using fixed weekly teaching rates. Recalculate receivables allowances when prompted.</li>
+          <li><strong>Money:</strong> use two decimal places, including .00. Ignore VAT and loan interest.</li>
         </ul>
         <p><strong>Easy:</strong> transaction totals supplied; 100 points per correct answer plus streak bonuses.<br>
           <strong>Hard:</strong> calculate transaction totals; 200 points per correct answer plus streak bonuses, −100 for a wrong answer.</p>
         <p>Both modes add 10 points per streak step. Hints halve the base points and streak bonus, preserving your streak without extending it. Mistakes reset your streak; you can retry. The final trial balance earns 250 points, or 125 with a hint.</p>
-        <p class="small">Your selling price stays fixed for the week. Refreshing starts a new game. Explore achievements from your daily results.</p>
+        <p class="small">Your selling price and adjustment rates stay fixed for all four weeks. Refreshing starts a new game. Explore achievements from your daily results.</p>
         <button id="van-guide-next" class="btn btn-primary" type="button">
           Create your van
         </button>
@@ -84,6 +87,7 @@
       >
         <div class="hot-dog-panel hot-dog-trading text-center">
           <h2 id="van-setup-title" tabindex="-1">Create your van</h2>
+          <button id="van-setup-achievements" type="button" class="btn btn-outline-primary mb-2">View achievements</button>
           <p>Roll for a business name and pick two colours.</p>
           <p id="van-name" class="fs-4 fw-bold" role="status"></p>
           <button
@@ -318,6 +322,7 @@
                 class="btn btn-primary mb-3"
                 type="button"
               ></button>
+              <button id="van-next-week" class="btn btn-primary w-100 mb-3 py-3 fw-bold" type="button" hidden>Start next week</button>
               <div class="van-summary-reports d-flex flex-wrap gap-2">
                 <button
                   class="btn btn-outline-primary"
@@ -349,6 +354,7 @@
               <p id="van-day-label" class="hero-eyebrow mb-1"></p>
               <h2 id="van-day-name" tabindex="-1" class="h5 mb-2"></h2>
               <h3 class="h6">Today’s stats</h3>
+              <button id="van-today-achievements" type="button" class="btn btn-outline-primary btn-sm mb-2">View achievements</button>
               <dl class="van-today-tiles">
                 <div>
                   <dt>Customers</dt>
@@ -409,6 +415,7 @@
           Back to the van
         </button>
         <h2 id="van-report-title" tabindex="-1"></h2>
+        <div id="van-report-dock">
         <nav
           id="van-report-tools"
           class="d-flex flex-wrap gap-2 mb-3"
@@ -433,7 +440,10 @@
             T-accounts
           </button>
         </nav>
+        <div id="van-trial-tray-host" hidden></div>
+        </div>
         <div id="van-report-content"></div>
+        <button id="van-report-achievements" type="button" class="btn btn-outline-primary mt-3">View achievements</button>
       </section>
       <dialog
         id="van-achievement-dialog"
@@ -443,10 +453,11 @@
         <ul id="van-achievement-guide"></ul>
         <button
           id="van-close-achievements"
+          aria-label="Close achievements"
           class="btn btn-primary"
           type="button"
         >
-          Close achievements
+          <span aria-hidden="true">×</span>
         </button>
       </dialog>
     </main>

@@ -167,19 +167,48 @@ adjustments.forEach(([topic, topicName, debitAccount, debitName, creditAccount, 
   });
 });
 
+// Topic groups contain both directions and both cash/credit variants.
+const extraTransactions = [
+  ["drawings", "drawings", "Drawings", "purchases", "Purchases", "The owner of BUSINESS withdraws goods costing AMOUNT from the business for personal use", "Goods taken personally increase Drawings and reduce Purchases."],
+  ["sales", "receivables", "Receivables", "sales", "Sales", "BUSINESS sells goods on credit for AMOUNT; the customer will pay later", "A credit sale increases Receivables and Sales; Bank does not change yet."],
+  ["purchases", "purchases", "Purchases", "bank", "Bank", "BUSINESS buys stock for resale costing AMOUNT and pays immediately from Bank", "Stock purchased for resale increases Purchases and the payment reduces Bank."],
+  ["purchases", "purchases", "Purchases", "payables", "Payables", "BUSINESS buys stock for resale costing AMOUNT on credit; the supplier will be paid later", "Credit purchases increase Purchases and Payables; Bank does not change yet."]
+];
+extraTransactions.forEach(([topic, debitAccount, debitName, creditAccount, creditName, question, explanation]) => {
+  transactionTypes.push({ topic, debitAccount, debitName, creditAccount, creditName, explanation,
+    hint: "Separate what the business received or gave up from how it was settled. If no money moved, consider whether a customer or supplier balance changed instead.",
+    buildQuestion: (business, amount) => question.replace("BUSINESS", business).replace("AMOUNT", amount)
+  });
+});
+const topicNames = { equipment: "Equipment purchases", rent: "Rent", sales: "Sales — cash and credit", capital: "Owner’s capital", drawings: "Drawings — cash and goods", loan: "Bank loans — receipts and repayments", purchases: "Purchases — cash and credit", allowance: "Allowance for doubtful receivables" };
+const accountLabels = { rent: "Rent", "accrued-expense": "Accruals", "prepaid-expense": "Prepayments", depreciation: "Depreciation charges" };
+transactionTypes.forEach((transaction) => {
+  if (transaction.topic === "loan-repayment") transaction.topic = "loan";
+  if (transaction.topic.startsWith("allowance-")) transaction.topic = "allowance";
+  if (transaction.topic === "accrued-income") {
+    transaction.creditAccount = "sundry-income";
+    transaction.creditName = "Sundry income";
+    transaction.explanation = "Accrued income recognises the asset receivable; Sundry income recognises other income earned in the period. Bank has not changed.";
+  }
+  for (const side of ["debit", "credit"]) {
+    transaction[side + "Name"] = accountLabels[transaction[side + "Account"]] || transaction[side + "Name"];
+  }
+  transaction.explanation = transaction.explanation.replaceAll("Rent expense", "Rent").replaceAll("Depreciation expense", "Depreciation charges");
+  const build = transaction.buildQuestion;
+  transaction.buildQuestion = (business, amount) => {
+    let text = build(business, amount).replace(/\bRecord\b[^.]*\.?/g, "").replace(/\s*\.\s*\./g, ".").trim().replace(/\.$/, "").replaceAll("Rent expense", "Rent");
+    if (transaction.topic === "accrued-income") text = text.replace("service income", "sundry income");
+    return text + ". Record the transaction.";
+  };
+});
+
 let currentTransaction = transactionTypes[0];
 
 let mixedPracticeQueue = [];
 
 function chooseTransactionType() {
-  if (topicSelector.value !== "all") {
-    return transactionTypes.find((transaction) => {
-      return transaction.topic === topicSelector.value;
-    });
-  }
-
   if (mixedPracticeQueue.length === 0) {
-    mixedPracticeQueue = [...transactionTypes];
+    mixedPracticeQueue = transactionTypes.filter((transaction) => topicSelector.value === "all" || transaction.topic === topicSelector.value);
 
     // Shuffle the copied array using Fisher–Yates.
     for (let index = mixedPracticeQueue.length - 1; index > 0; index--) {
@@ -378,10 +407,12 @@ const totalCreditsDisplay = document.querySelector("#total-credits");
 const balanceStatus = document.querySelector("#balance-status");
 const topicSelector = document.querySelector("#transaction-topic");
 
-// Keep both account selectors and topic choices aligned with the teaching data.
+// Rebuild choices from the grouped teaching data so old split topics cannot remain.
+topicSelector.replaceChildren(new Option("- Mixed practice -", "all"));
+[1, 2].forEach((row) => document.querySelector(`#account-${row}`).replaceChildren(new Option("Choose an account", "")));
 transactionTypes.forEach((transaction) => {
   if (!Array.from(topicSelector.options).some((option) => option.value === transaction.topic)) {
-    topicSelector.add(new Option(transaction.topicName, transaction.topic));
+    topicSelector.add(new Option(topicNames[transaction.topic] || transaction.topicName, transaction.topic));
   }
   [1, 2].forEach((row) => {
     const select = document.querySelector(`#account-${row}`);
