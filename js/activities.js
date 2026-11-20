@@ -133,6 +133,7 @@ function startRound() {
   get("game-screen").hidden = false;
   get("question-number").textContent = "0 answered";
   get("blitz-live-score").textContent = "0 correct";
+  get("blitz-answer-status").textContent = "";
   get("blitz-celebration").hidden = true;
   get("blitz-celebration").replaceChildren();
   answerButtons.forEach((button) => { button.disabled = false; });
@@ -159,6 +160,7 @@ function answer(selected) {
     return;
   }
   const isCorrect = selected === currentQuestion.answer;
+  get("blitz-answer-status").textContent = "Last answer: " + (isCorrect ? "✓ Correct" : "✕ Incorrect · −5 seconds") + " — " + selected;
   history.push({ ...currentQuestion, selected, isCorrect });
   if (!isCorrect) deadline -= 5000;
   const chosenButton = [...answerButtons].find((button) => button.dataset.answer === selected);

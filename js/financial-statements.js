@@ -89,9 +89,9 @@ groups.forEach(([letter, name], index) => {
   button.className = "statement-account-button deadclic-button";
   const initial = document.createElement("strong");
   initial.textContent = letter;
-  const label = document.createElement("span");
-  label.textContent = name;
-  button.append(initial, label);
+  button.setAttribute("aria-label", letter + " — " + name);
+  button.title = name;
+  button.append(initial);
   button.addEventListener("click", () => selectGroup(index));
   $("#statement-account-list").append(button);
 });

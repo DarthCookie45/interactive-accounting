@@ -33,13 +33,13 @@ function updatePaint() {
     });
     const luminance = rgb[0] * 0.2126 + rgb[1] * 0.7152 + rgb[2] * 0.0722;
     luminances[name] = luminance;
-    page.style.setProperty("--van-" + name + "-ink", luminance > 0.179 ? "#111111" : "#ffffff");
+    page.style.setProperty("--van-" + name + "-ink", luminance > 0.179 ? "#000000" : "#ffffff");
   }
   const contrast = (Math.max(luminances.primary, luminances.accent) + 0.05) / (Math.min(luminances.primary, luminances.accent) + 0.05);
-  const fallback = contrast < 1.6;
-  const selection = fallback ? (luminances.primary > 0.179 ? "#5b3cc4" : "#ffcaa7") : accent.value;
+  const fallback = contrast < 3;
+  const selection = fallback ? (luminances.primary > 0.179 ? "#1f2937" : "#ffffff") : accent.value;
   page.style.setProperty("--van-selection", selection);
-  page.style.setProperty("--van-selection-ink", fallback ? (luminances.primary > 0.179 ? "#ffffff" : "#111111") : (luminances.accent > 0.179 ? "#111111" : "#ffffff"));
+  page.style.setProperty("--van-selection-ink", fallback ? (luminances.primary > 0.179 ? "#ffffff" : "#000000") : (luminances.accent > 0.179 ? "#000000" : "#ffffff"));
 }
 
 let nameRerolls = 0;
@@ -1096,7 +1096,7 @@ function renderStatements(container) {
 }
 function updateReportNavigation() {
   const feature = !get("van-report").hidden && get("van-report-tools").dataset.activeReport ? get("van-report-tools").dataset.activeReport : trialComplete() ? "statements" : "trial";
-  const order = feature === "statements" ? ["trial", "statements", "ledger"] : feature === "ledger" ? ["trial", "ledger", "statements"] : ["statements", "trial", "ledger"];
+  const order = ["trial", "statements", "ledger"];
   for (const container of [get("van-day-summary").querySelector(".van-summary-reports"), get("van-report-tools")]) {
     const buttons = [...container.querySelectorAll("[data-van-report]")].sort((a, b) => order.indexOf(a.dataset.vanReport) - order.indexOf(b.dataset.vanReport));
     buttons.forEach((button) => {
@@ -1120,6 +1120,9 @@ function openReport(type) {
   reportContent.className = type === "ledger" ? "van-report-ledger" : type === "statements" ? "van-statement-tables" : "table-responsive";
   reportContent.classList.toggle("van-report-paper", type !== "ledger");
   renderers[type](reportContent);
+  get("van-report-sidebar").hidden = type === "ledger";
+  get("van-report-layout").classList.toggle("has-ledger", type !== "ledger");
+  if (type !== "ledger") renderLedger(get("van-report-ledger"));
   get("van-report-title").textContent = businessName + " · " + titles[type] + " · Week " + (game.weekIndex + 1) + " · " + week[dayIndex].name;
   get("van-report-tools").hidden = dayIndex !== 6 || get("van-day-summary").hidden;
   get("van-report-dock").hidden = get("van-report-tools").hidden;
@@ -1143,6 +1146,12 @@ document.querySelectorAll("[data-van-report]").forEach((button) => {
     openReport(button.dataset.vanReport);
   });
 });
+get("van-report-ledger-open").addEventListener("click", () => openReport("ledger"));
+if (typeof ResizeObserver !== "undefined") {
+  new ResizeObserver(() => {
+    get("van-report").style.setProperty("--report-dock-height", get("van-report-dock").getBoundingClientRect().height + "px");
+  }).observe(get("van-report-dock"));
+}
 get("van-report-back").addEventListener("click", () => {
   get("van-report").hidden = true;
   day.hidden = false;

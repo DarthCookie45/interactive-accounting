@@ -135,6 +135,12 @@ function completeMonth(mode, useHint) {
     }
     assert(get('van-next-day').disabled);
     get('van-trial-open').click();
+    assert(!get('van-report-sidebar').hidden, 'trial exercise includes the live ledger');
+    assert(get('van-report-ledger').children.length > 0);
+    get('van-report-ledger-open').click();
+    assert(get('van-report-sidebar').hidden, 'full-screen ledger uses the whole report');
+    get('van-report-tools').querySelector('[data-van-report="trial"]').click();
+    assert.deepEqual(get('van-report-tools').querySelectorAll('[data-van-report]').map(button => button.dataset.vanReport), ['trial', 'statements', 'ledger']);
     assert.equal(get('van-trial-tray-host').parentElement, get('van-report-dock'), 'tray and report buttons share the sticky dock');
     assert(get('van-trial-tray-host').querySelector('.van-trial-pool'));
     assert(get('van-report-tools').querySelector('[data-van-report="trial"]').className.includes('van-report-featured'));
@@ -142,17 +148,28 @@ function completeMonth(mode, useHint) {
     const rows = run('accountNames.map(account => ({account,balance:balanceFor(account)})).filter(row => row.balance)');
     const tableRows = content.querySelector('tbody').children;
     rows.forEach((row, index) => tableRows[index].cells[row.balance > 0 ? 1 : 2].children[0].drop(index));
+    const placedBeforeLedger = run('trialExercises.get(game.weekIndex).placed.size');
+    get('van-report-ledger-open').click();
+    get('van-report-tools').querySelector('[data-van-report="trial"]').click();
+    assert.equal(run('trialExercises.get(game.weekIndex).placed.size'), placedBeforeLedger, 'full-screen ledger preserves trial placements');
     const before = run('score'); button('Check entry').click();
     assert(run('trialComplete()')); assert.equal(run('score') - before, useHint ? 125 : 250);
     get('van-report-back').click();
     get('van-day-summary').querySelector('[data-van-report="statements"]').click();
+    assert(!get('van-report-sidebar').hidden, 'financial statements include the live ledger');
+    assert.deepEqual(get('van-report-tools').querySelectorAll('[data-van-report]').map(button => button.dataset.vanReport), ['trial', 'statements', 'ledger']);
     assert(get('van-report-tools').querySelector('[data-van-report="statements"]').className.includes('van-report-featured'));
     const fill = () => {
       const groups = run('statementExercise.stage') === 'spl' ? ['sales','openingCost','cost','closingCost','expenses'] : ['noncurrent','current','capital','drawings','currentLiability','noncurrentLiability'];
       const slots = content.querySelectorAll('.van-financial-slot'); const accounts = run('financialAccounts()'); let index = 0;
       groups.forEach(section => accounts.filter(account => account.section === section).forEach(account => slots[index++].drop(account.account)));
     };
-    fill(); button('Remove all tiles').click(); assert.equal(run('statementExercise.placed.size'), 0);
+    fill();
+    const statementPlaced = run('statementExercise.placed.size');
+    get('van-report-ledger-open').click();
+    get('van-report-tools').querySelector('[data-van-report="statements"]').click();
+    assert.equal(run('statementExercise.placed.size'), statementPlaced, 'full-screen ledger preserves statement placements');
+    button('Remove all tiles').click(); assert.equal(run('statementExercise.placed.size'), 0);
     fill(); button('Check profit or loss statement').click(); assert(run('statementExercise.splComplete'));
     fill();
     // An otherwise correct SFP must not pass without the period profit/loss.

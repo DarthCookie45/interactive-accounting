@@ -83,17 +83,14 @@ class VanAccounting {
       add("Van purchase", "Motor vehicles", "Bank", c.vehicle, "The business buys a van for " + money(c.vehicle) + ", paid from Bank.", "Motor vehicles increases and Bank decreases.");
       add("Equipment purchase", "Equipment", "Bank", c.equipment, "The business buys cooking equipment for " + money(c.equipment) + ", paid from Bank.", "Equipment increases and Bank decreases.");
     } else {
-      const openingUsed = day === 0 ? (this.opening["Closing inventory – SFP"] || 0) : 0;
-      const purchase = Math.max(100, data.hotDogs * data.ingredientPrice - openingUsed) + (day === 6 ? this.closingStock : 0);
+      const purchase = data.hotDogs * data.ingredientPrice + (day === 6 ? this.closingStock : 0);
       const supplier = day === 1 || day === 4;
       const qtyText = data.hotDogs + " hot dogs at " + money(data.ingredientPrice) + " per hot dog";
-      const calculation = openingUsed ? " Use opening ingredients worth " + money(openingUsed) + " first, reducing the new purchase by that amount." : "";
       const stockText = day === 6 ? " Add " + money(this.closingStock) + " for unopened ingredients kept for next week." : "";
       add("Ingredient purchases", "Purchases", supplier ? "Payables" : "Bank", purchase,
-        hard ? "Buy ingredients for " + qtyText + "." + calculation + stockText + (supplier ? " The supplier allows credit; no payment is made today." : " Pay the total from Bank.")
+        hard ? "Buy ingredients for " + qtyText + "." + stockText + (supplier ? " The supplier allows credit; no payment is made today." : " Pay the total from Bank.")
           : "Buy ingredients for a total of " + money(purchase) + (supplier ? " on credit; the supplier will be paid later." : ", paid from Bank.") +
             " This total is " + money(data.hotDogs * data.ingredientPrice) + " for " + data.hotDogs + " hot dogs at " + money(data.ingredientPrice) + " each" +
-            (openingUsed ? ", less " + money(openingUsed) + " of opening ingredients used" : "") +
             (day === 6 ? ", plus " + money(this.closingStock) + " for unopened ingredients kept for next week" : "") + ". Do not add anything to the stated total.",
         supplier ? "Credit purchases increase Purchases and Payables." : "Purchases increases and the payment reduces Bank.");
       const creditSale = day === 1 || day === 4;

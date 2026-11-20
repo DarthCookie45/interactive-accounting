@@ -11,6 +11,10 @@ for (let run = 0; run < 200; run++) {
     const beforeVehicle = game.balance('Motor vehicles') + game.balance('Accumulated depreciation: Motor vehicles');
     for (let day = 0; day < 7; day++) {
       for (const entry of game.planDay(day, true, pennies => 'GBP ' + pennies)) {
+        if (week > 0 && day === 0 && entry.label === 'Ingredient purchases') {
+          assert.equal(entry.pennies, game.week[0].hotDogs * game.week[0].ingredientPrice, 'new purchases do not deduct opening stock');
+          assert(!entry.question.includes('opening ingredients'));
+        }
         if (entry.label === 'Customer settlement') assert(game.balance('Receivables') >= entry.pennies);
         if (entry.label === 'Supplier settlement') assert(-game.balance('Payables') >= entry.pennies);
         if (entry.label === 'Loan repayment') assert(-game.balance('Bank loan') >= entry.pennies);

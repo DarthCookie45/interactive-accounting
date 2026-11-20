@@ -185,6 +185,7 @@ function updateScreen() {
   document.querySelectorAll(".explorer-wheel-stage").forEach((segment, index) => {
     segment.classList.toggle("is-current", index === currentStage);
     segment.classList.toggle("is-explored", index < currentStage);
+    segment.setAttribute("aria-current", index === currentStage ? "step" : "false");
   });
 }
 

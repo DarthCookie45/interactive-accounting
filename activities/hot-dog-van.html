@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="../css/styles.css" />
     <script src="../js/van-accounting.js?v=20261117" defer></script>
     <script src="../js/hot-dog-van.js?v=20261117" defer></script>
+    <script src="../js/accessibility.js"></script>
   </head>
 
   <body>
@@ -442,7 +443,14 @@
         </nav>
         <div id="van-trial-tray-host" hidden></div>
         </div>
-        <div id="van-report-content"></div>
+        <div id="van-report-layout" class="van-report-layout">
+          <div id="van-report-content"></div>
+          <aside id="van-report-sidebar" class="van-report-paper" aria-labelledby="van-report-ledger-title" hidden>
+            <h3 id="van-report-ledger-title">Live T-accounts</h3>
+            <button id="van-report-ledger-open" type="button" class="btn btn-outline-primary mb-2">View full-screen T-accounts</button>
+            <div id="van-report-ledger" class="van-ledger-preview"></div>
+          </aside>
+        </div>
         <button id="van-report-achievements" type="button" class="btn btn-outline-primary mt-3">View achievements</button>
       </section>
       <dialog
@@ -457,7 +465,7 @@
           class="btn btn-primary"
           type="button"
         >
-          <span aria-hidden="true">×</span>
+          <svg aria-hidden="true" focusable="false" width="24" height="24" viewBox="0 0 24 24"><path d="M5 5 19 19M19 5 5 19" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" /></svg>
         </button>
       </dialog>
     </main>
