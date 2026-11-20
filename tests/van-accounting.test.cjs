@@ -29,13 +29,16 @@ for (let run = 0; run < 200; run++) {
     const balances = game.balances(), totals = game.totals();
     assert.equal(Object.values(balances).reduce((sum, n) => sum + n, 0), 0, 'trial balance');
     const assets = Object.keys(balances).filter(account => ['current', 'noncurrent'].includes(game.accounts[account])).reduce((sum, account) => sum + balances[account], 0);
-    assert.equal(assets, -balances['Owner’s capital'] - balances['Accumulated profit/loss'] + totals.profit - balances.Drawings - balances.Payables - balances['Bank loan'], 'SFP');
-    assert.equal(balances['Owner’s capital'], game.entries.reduce((sum, entry) => sum + (entry.debit === 'Owner’s capital' ? entry.pennies : 0) - (entry.credit === 'Owner’s capital' ? entry.pennies : 0), 0), 'capital includes investments only');
+    assert.equal(assets, -balances['Owner’s capital'] + totals.profit - balances.Drawings - balances.Payables - balances['Bank loan'], 'SFP');
+    assert(!Object.hasOwn(balances, 'Accumulated profit/loss'));
+    assert.equal(balances['Owner’s capital'], (game.opening['Owner’s capital'] || 0) + game.currentEntries().reduce((sum, entry) => sum + (entry.debit === 'Owner’s capital' ? entry.pennies : 0) - (entry.credit === 'Owner’s capital' ? entry.pennies : 0), 0), 'capital includes brought-forward capital and this week’s investments');
+    assert(game.currentEntries().every(entry => !entry.question?.includes('teaching')));
     assert.equal(-balances['Allowance for doubtful receivables'], Math.round(balances.Receivables * config.allowanceRate / 100));
     assert.equal(game.currentEntries().some(entry => entry.label === 'Depreciation: Motor vehicles'), config.vehicleDepreciation);
     assert.equal(game.currentEntries().some(entry => entry.label === 'Depreciation: Equipment'), config.equipmentDepreciation);
     game.finishWeek(); game.finishWeek();
     assert.equal(game.snapshots.length, week + 1, 'closing cannot duplicate');
+    assert.equal(game.snapshots.at(-1).nextOpening['Owner’s capital'], balances['Owner’s capital'] - totals.profit + balances.Drawings, 'profit and drawings close directly to capital');
     assert.equal(Object.values(game.snapshots.at(-1).nextOpening).reduce((sum, n) => sum + n, 0), 0);
     if (week < 3) {
       const stock = balances['Closing inventory – SFP'];

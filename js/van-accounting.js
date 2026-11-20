@@ -1,6 +1,6 @@
 "use strict";
 
-// Integer pennies throughout. Rates are weekly teaching rates, fixed for the run.
+// Integer pennies throughout. Weekly depreciation rates stay fixed for the run.
 class VanAccounting {
   constructor(random = Math.random) {
     this.random = random;
@@ -23,7 +23,7 @@ class VanAccounting {
       "Bank": "current", "Receivables": "current", "Payables": "currentLiability",
       "Bank loan": "noncurrentLiability", "Motor vehicles": "noncurrent", "Equipment": "noncurrent",
       "Accumulated depreciation: Motor vehicles": "noncurrent", "Accumulated depreciation: Equipment": "noncurrent",
-      "Allowance for doubtful receivables": "current", "Owner’s capital": "capital", "Accumulated profit/loss": "capital", "Drawings": "drawings",
+      "Allowance for doubtful receivables": "current", "Owner’s capital": "capital", "Drawings": "drawings",
       "Sales": "sales", "Purchases": "cost", "Opening inventory (SPL)": "openingCost",
       "Closing inventory – SFP": "current", "Closing inventory – SPL": "closingCost",
       "Rent": "expenses", "Repairs": "expenses", "Wages": "expenses",
@@ -146,7 +146,7 @@ class VanAccounting {
         const base = asset === "Motor vehicles" ? this.balance(asset) + this.balance(accumulated) : this.balance(asset);
         const charge = Math.round(base * rate / 100);
         if (charge > 0) add("Depreciation: " + asset, "Depreciation charges", accumulated, charge,
-          asset + " is depreciated at the same " + rate + "% weekly teaching rate throughout the activity, using " + (asset === "Motor vehicles" ? "reducing balance on its current carrying amount of " : "straight-line on its original cost of ") + money(base) + ". Calculate this week’s charge to the nearest penny.",
+          asset + " is depreciated at the same " + rate + "% weekly rate throughout the activity, using " + (asset === "Motor vehicles" ? "reducing balance on its current carrying amount of " : "straight-line on its original cost of ") + money(base) + ". Calculate this week’s charge to the nearest penny.",
           "The depreciation charge belongs in the SPL. Accumulated depreciation reduces the asset’s carrying amount in the SFP.");
       }
       const receivables = this.balance("Receivables");
@@ -169,7 +169,7 @@ class VanAccounting {
     for (const [account, section] of Object.entries(this.accounts)) {
       if (["noncurrent", "current", "currentLiability", "noncurrentLiability", "capital"].includes(section) && balances[account]) nextOpening[account] = balances[account];
     }
-    nextOpening["Accumulated profit/loss"] = (balances["Accumulated profit/loss"] || 0) - totals.profit + (balances["Drawings"] || 0);
+    nextOpening["Owner’s capital"] = (balances["Owner’s capital"] || 0) - totals.profit + (balances["Drawings"] || 0);
     this.snapshots.push({ week: this.weekIndex, balances, totals, nextOpening });
   }
   nextWeek() {

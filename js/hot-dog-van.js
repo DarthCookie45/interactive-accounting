@@ -213,13 +213,14 @@ function updateStats() {
 
 function renderLedger(container) {
   container.replaceChildren();
-  const closed = dayIndex === 6 && get("van-journal-panel").hidden;
+  // Keep the reference ledger on pre-closing balances during the final exercises.
+  const closed = game.snapshots.some(snapshot => snapshot.week === game.weekIndex);
   const entries = game.currentEntries();
   const balances = game.balances();
   const profit = game.totals().profit;
   const drawings = balanceFor("Drawings");
   for (const account of accountNames) {
-    if (!balances[account] && !game.opening[account] && !entries.some(entry => entry.debit === account || entry.credit === account) && !(closed && account === "Accumulated profit/loss" && (profit || drawings))) continue;
+    if (!balances[account] && !game.opening[account] && !entries.some(entry => entry.debit === account || entry.credit === account)) continue;
     const card = document.createElement("section");
     card.className = "van-ledger-card";
     const heading = document.createElement("h4");
@@ -235,13 +236,13 @@ function renderLedger(container) {
     }
     const permanent = ["noncurrent", "current", "capital", "currentLiability", "noncurrentLiability"].includes(game.accounts[account]);
     let balance = balances[account];
-    if (closed && account === "Accumulated profit/loss") {
+    if (closed && account === "Owner’s capital") {
       if (profit) lines[profit > 0 ? "credit" : "debit"].push([profit > 0 ? "Profit transfer" : "Loss transfer", Math.abs(profit)]);
       if (drawings) lines.debit.push(["Drawings transfer", drawings]);
       balance = balance - profit + drawings;
     }
     if (closed && balance) lines[balance > 0 ? "credit" : "debit"].push([
-      permanent ? "Balance c/d" : account === "Drawings" ? "Accumulated profit/loss" : "Profit or loss transfer", Math.abs(balance)
+      permanent ? "Balance c/d" : account === "Drawings" ? "Owner’s capital" : "Profit or loss transfer", Math.abs(balance)
     ]);
     for (const side of ["debit", "credit"]) {
       const column = document.createElement("div");
@@ -944,7 +945,9 @@ function renderStatements(container) {
   const accounts = financialAccounts(), stage = statementExercise.stage;
   const locked = stage === "spl" ? statementExercise.splComplete : statementExercise.sfpComplete;
   const allowed = stage === "spl" ? ["sales", "openingCost", "cost", "closingCost", "expenses"] : ["noncurrent", "current", "capital", "drawings", "currentLiability", "noncurrentLiability"];
-  let selected = null;
+  let selected = null, selectedHeading = null;
+  statementExercise.headings ||= new Map();
+  const headingSlots = new Map(), headingSources = new Map(), headingLabels = new Map();
   const toolbar = document.createElement("div");
   toolbar.className = "d-flex flex-wrap gap-2 mb-3";
   for (const [value, label] of [["spl", "1. Profit or loss"], ["sfp", "2. Financial position"]]) {
@@ -957,6 +960,9 @@ function renderStatements(container) {
   function rerender() { container.replaceChildren(); renderStatements(container); }
   const guidance = document.createElement("p");
   guidance.textContent = "Build the SPL first, then the SFP. Drag accounts or select an account and its space. Used accounts are marked; select a placed account to return it before checking. Accumulated depreciation and receivables allowances are deductions from assets.";
+  if (hardMode) guidance.textContent += " In Hard mode, place the section headings from the heading tray too. Select a heading, then its space, or drag it into position.";
+  const headingTray = document.createElement("div"); headingTray.className = "van-heading-tray mb-3";
+  headingTray.setAttribute("aria-label", "Statement section headings");
   const layout = document.createElement("div"); layout.className = "van-financial-layout";
   const reference = document.createElement("aside"); reference.className = "van-financial-reference";
   const statement = document.createElement("section");
@@ -973,6 +979,18 @@ function renderStatements(container) {
     return [...statementExercise.placed].reduce((total, [key, name]) => key.startsWith(section + ":") ? total + balanceFor(name) : total, 0);
   }
   function refresh() {
+    headingSources.forEach((button, name) => {
+      const usedHeading = [...statementExercise.headings].some(([key, value]) => key.startsWith(stage + ":") && value === name);
+      button.disabled = locked || usedHeading;
+      button.textContent = name + (usedHeading ? " · used" : "");
+      button.setAttribute("aria-pressed", String(selectedHeading === name));
+    });
+    headingSlots.forEach((button, key) => {
+      const name = statementExercise.headings.get(key);
+      button.textContent = name || "Place section heading";
+      button.disabled = locked; button.draggable = Boolean(name) && !locked;
+      button.setAttribute("data-filled", String(Boolean(name)));
+    });
     sources.forEach((button, name) => {
       button.disabled = locked || used(name); button.textContent = name + (used(name) ? " · used" : "");
       button.setAttribute("aria-pressed", String(selected === name));
@@ -1010,14 +1028,38 @@ function renderStatements(container) {
     statementExercise.placed.set(key, name); selected = null; status.hidden = true; refresh();
   }
   function section(label, key) {
-    const title = document.createElement("h4"); title.className = "h6 fw-bold mt-3"; title.textContent = label; statement.append(title);
+    if (hardMode) {
+      const headingKey = stage + ":" + key;
+      headingLabels.set(headingKey, label);
+      const title = document.createElement("button"); title.type = "button";
+      title.className = "btn btn-outline-secondary van-financial-heading-slot fw-bold mt-3";
+      title.setAttribute("aria-label", "Section heading space " + headingLabels.size);
+      title.addEventListener("click", () => {
+        if (locked) return;
+        if (selectedHeading !== null) placeHeading(selectedHeading, headingKey);
+        else { statementExercise.headings.delete(headingKey); status.hidden = true; refresh(); }
+      });
+      title.addEventListener("dragstart", event => {
+        const name = statementExercise.headings.get(headingKey);
+        if (locked || !name) event.preventDefault(); else event.dataTransfer.setData("text/plain", "heading:" + name);
+      });
+      title.addEventListener("dragover", event => event.preventDefault());
+      title.addEventListener("drop", event => {
+        event.preventDefault(); const value = event.dataTransfer.getData("text/plain");
+        if (value.startsWith("heading:")) placeHeading(value.slice(8), headingKey);
+      });
+      headingSlots.set(headingKey, title); statement.append(title);
+    } else {
+      const title = document.createElement("h4"); title.className = "h6 fw-bold mt-3"; title.textContent = label; statement.append(title);
+    }
     const rows = accounts.filter(row => row.section === key);
     if (!rows.length) { const zero = document.createElement("p"); zero.textContent = money(0); statement.append(zero); return; }
     rows.forEach((_, index) => {
       const slot = key + ":" + index;
       const button = document.createElement("button"); button.type = "button"; button.className = "btn btn-outline-secondary van-financial-slot";
-      button.setAttribute("aria-label", label + ", space " + (index + 1));
+      button.setAttribute("aria-label", (hardMode ? "Account" : label) + ", space " + (index + 1));
       button.addEventListener("click", () => {
+        if (selectedHeading !== null) return;
         if (selected !== null) place(selected, slot);
         else if (!locked) { statementExercise.placed.delete(slot); status.hidden = true; refresh(); }
       });
@@ -1026,6 +1068,14 @@ function renderStatements(container) {
       button.addEventListener("drop", event => { event.preventDefault(); place(event.dataTransfer.getData("text/plain"), slot); });
       slots.set(slot, button); statement.append(button);
     });
+  }
+  function placeHeading(name, key) {
+    if (locked || ![...headingLabels.values()].includes(name)) return;
+    for (const [previous, value] of statementExercise.headings) {
+      if (previous.startsWith(stage + ":") && value === name) statementExercise.headings.delete(previous);
+    }
+    statementExercise.headings.set(key, name);
+    selectedHeading = null; selected = null; status.hidden = true; refresh();
   }
   function line(label, key) {
     const row = document.createElement("p"); row.className = "van-financial-total";
@@ -1056,7 +1106,7 @@ function renderStatements(container) {
   }
   const tbRows = accounts.map(row => {
     const button = document.createElement("button"); button.type = "button"; button.className = "btn btn-sm btn-outline-primary text-start"; button.draggable = true;
-    button.addEventListener("click", () => { selected = row.account; refresh(); });
+    button.addEventListener("click", () => { selected = row.account; selectedHeading = null; refresh(); });
     button.addEventListener("dragstart", event => { if (locked || used(row.account)) event.preventDefault(); else event.dataTransfer.setData("text/plain", row.account); });
     sources.set(row.account, button);
     return [button, row.balance >= 0 ? money(row.balance) : "—", row.balance < 0 ? money(-row.balance) : "—"];
@@ -1070,13 +1120,15 @@ function renderStatements(container) {
     const correct = [...slots.keys()].every(key => accounts.some(row => row.account === statementExercise.placed.get(key) && row.section === key.split(":")[0])) &&
       accounts.filter(row => allowed.includes(row.section)).every(row => [...slots.keys()].some(key => statementExercise.placed.get(key) === row.account));
     const profitCorrect = stage === "spl" || readProfit() === game.totals().profit;
-    if (!correct || !profitCorrect) {
+    const headingsCorrect = !hardMode || [...headingLabels].every(([key, label]) => statementExercise.headings.get(key) === label);
+    if (!correct || !profitCorrect || !headingsCorrect) {
       weekMistakes++;
       totalMistakes++;
       updateMilestones();
       weekMistakeDays.add(dayIndex);
       status.className = "alert alert-danger mt-3"; status.hidden = false;
-      status.textContent = !correct ? "Check missing or misplaced accounts. Distinguish income, costs, assets, capital and liabilities. Asset deductions belong with their related assets."
+      status.textContent = !headingsCorrect ? "Check the missing or misplaced section headings. Follow the statement’s order and match each heading to the accounts beneath it."
+        : !correct ? "Check missing or misplaced accounts. Distinguish income, costs, assets, capital and liabilities. Asset deductions belong with their related assets."
         : "Check the profit or loss carried from your SPL. For a loss, use a minus sign or brackets, for example -£100.00 or (£100.00).";
       status.focus({ preventScroll: true }); return;
     }
@@ -1085,14 +1137,38 @@ function renderStatements(container) {
     rerender();
   });
   const clear = document.createElement("button"); clear.type = "button"; clear.className = "btn btn-outline-secondary mt-3 ms-2"; clear.textContent = "Remove all tiles"; clear.disabled = locked;
-  clear.addEventListener("click", () => { if (locked) return; for (const key of slots.keys()) statementExercise.placed.delete(key); selected = null; status.hidden = true; refresh(); });
+  clear.addEventListener("click", () => {
+    if (locked) return;
+    for (const key of slots.keys()) statementExercise.placed.delete(key);
+    for (const key of headingSlots.keys()) statementExercise.headings.delete(key);
+    selected = null; selectedHeading = null; status.hidden = true; refresh();
+  });
   statement.append(check, clear);
   if (locked || stage === "sfp" && statementExercise.splComplete) {
     status.className = "alert alert-success mt-3"; status.hidden = false;
     status.textContent = locked ? stage === "spl" ? "Profit or loss statement checked and correct." : "Both statements are correct. Assets = capital + liabilities. Return to the van for this week’s results."
       : "SPL complete. Build the SFP and enter this week’s profit or loss.";
   }
-  layout.append(reference, statement); container.append(toolbar, guidance, layout, status); refresh();
+  if (hardMode) {
+    const names = [...headingLabels.values()];
+    for (let index = names.length - 1; index > 0; index--) {
+      const other = Math.floor(Math.random() * (index + 1));
+      [names[index], names[other]] = [names[other], names[index]];
+    }
+    for (const name of names) {
+      const button = document.createElement("button"); button.type = "button";
+      button.className = "btn btn-outline-primary"; button.draggable = true;
+      button.addEventListener("click", () => { if (!locked) { selectedHeading = name; selected = null; refresh(); } });
+      button.addEventListener("dragstart", event => {
+        if (button.disabled) event.preventDefault(); else event.dataTransfer.setData("text/plain", "heading:" + name);
+      });
+      headingSources.set(name, button); headingTray.append(button);
+    }
+  }
+  layout.append(reference, statement);
+  container.append(toolbar, guidance);
+  if (hardMode) container.append(headingTray);
+  container.append(layout, status); refresh();
 }
 function updateReportNavigation() {
   const feature = !get("van-report").hidden && get("van-report-tools").dataset.activeReport ? get("van-report-tools").dataset.activeReport : trialComplete() ? "statements" : "trial";

@@ -2538,3 +2538,10 @@ button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible
   [aria-pressed="true"], [aria-current="page"] { outline: 3px solid Highlight; outline-offset: 3px; }
   .van-trial-blank[data-filled="true"], .van-financial-slot[data-filled="true"] { border-style: solid; }
 }
+
+.van-heading-tray { display: flex; flex-wrap: wrap; gap: 10px; padding: 14px; border: 2px dashed #6c757d; border-radius: 12px; background: white; }
+.van-financial-heading-slot { display: block; width: 100%; padding: 10px; text-align: left; border: 2px dashed #6c757d; font-size: max(var(--reading-min, 0px), 1rem); }
+.van-financial-heading-slot[data-filled="true"] { background: var(--van-primary, #5b3cc4); color: var(--van-primary-ink, white); border: 2px solid #1f2937; opacity: 1; }
+.van-financial-heading-slot[data-filled="true"]:hover { background: var(--van-selection, white); color: var(--van-selection-ink, #1f2937); }
+.van-heading-tray button[aria-pressed="true"] { outline: 3px solid #1f2937; outline-offset: 3px; background: #5b3cc4; color: white; }
+.van-heading-tray button[aria-pressed="true"]::after { content: " ✓"; }

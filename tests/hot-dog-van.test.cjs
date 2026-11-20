@@ -137,6 +137,7 @@ function completeMonth(mode, useHint) {
     get('van-trial-open').click();
     assert(!get('van-report-sidebar').hidden, 'trial exercise includes the live ledger');
     assert(get('van-report-ledger').children.length > 0);
+    assert(!get('van-report-ledger').all().some(node => node.textContent === 'Profit transfer' || node.textContent === 'Loss transfer'), 'exercise ledger must retain pre-closing capital balances');
     get('van-report-ledger-open').click();
     assert(get('van-report-sidebar').hidden, 'full-screen ledger uses the whole report');
     get('van-report-tools').querySelector('[data-van-report="trial"]').click();
@@ -159,17 +160,38 @@ function completeMonth(mode, useHint) {
     assert(!get('van-report-sidebar').hidden, 'financial statements include the live ledger');
     assert.deepEqual(get('van-report-tools').querySelectorAll('[data-van-report]').map(button => button.dataset.vanReport), ['trial', 'statements', 'ledger']);
     assert(get('van-report-tools').querySelector('[data-van-report="statements"]').className.includes('van-report-featured'));
-    const fill = () => {
+    const fill = (includeHeadings = true) => {
       const groups = run('statementExercise.stage') === 'spl' ? ['sales','openingCost','cost','closingCost','expenses'] : ['noncurrent','current','capital','drawings','currentLiability','noncurrentLiability'];
       const slots = content.querySelectorAll('.van-financial-slot'); const accounts = run('financialAccounts()'); let index = 0;
       groups.forEach(section => accounts.filter(account => account.section === section).forEach(account => slots[index++].drop(account.account)));
+      const headingSlots = content.querySelectorAll('.van-financial-heading-slot');
+      if (mode === 'easy') assert.equal(headingSlots.length, 0, 'Easy mode keeps its headings');
+      if (mode === 'hard' && includeHeadings) {
+        const labels = run('statementExercise.stage') === 'spl'
+          ? ['Sales revenue', 'Cost of sales — opening inventory', 'Purchases', 'Less: closing inventory', 'Expenses and adjustments']
+          : ['Non-current assets and accumulated depreciation', 'Current assets and receivables allowance', 'Capital introduced / brought forward', 'Less: drawings', 'Current liabilities', 'Non-current liabilities'];
+        assert.equal(headingSlots.length, labels.length);
+        labels.forEach((label, index) => {
+          if (index % 2) {
+            content.querySelector('.van-heading-tray').children.find(button => button.textContent === label).click();
+            headingSlots[index].click();
+          } else headingSlots[index].drop('heading:' + label);
+        });
+      }
     };
+    if (mode === 'hard') {
+      fill(false); button('Check profit or loss statement').click();
+      assert(!run('statementExercise.splComplete'), 'correct accounts without headings must not pass Hard mode');
+    }
     fill();
     const statementPlaced = run('statementExercise.placed.size');
+    const headingsPlaced = run('statementExercise.headings.size');
     get('van-report-ledger-open').click();
     get('van-report-tools').querySelector('[data-van-report="statements"]').click();
     assert.equal(run('statementExercise.placed.size'), statementPlaced, 'full-screen ledger preserves statement placements');
+    assert.equal(run('statementExercise.headings.size'), headingsPlaced, 'full-screen ledger preserves heading placements');
     button('Remove all tiles').click(); assert.equal(run('statementExercise.placed.size'), 0);
+    if (mode === 'hard') assert.equal(run('statementExercise.headings.size'), 0);
     fill(); button('Check profit or loss statement').click(); assert(run('statementExercise.splComplete'));
     fill();
     // An otherwise correct SFP must not pass without the period profit/loss.
